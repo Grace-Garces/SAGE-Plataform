@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Login - SAGE</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* Variáveis de Cores e Estilos - Minimalista e Elegante (PADRÃO) */
+        :root {
+            /* Paleta Primária - Neutra e Limpa */
+            --bg-primary: #f8f9fa; /* Fundo principal, quase branco */
+            --surface-card: #ffffff; /* Fundo de cartões, branco puro */
+            --border-light: #e0e6ed; /* Bordas e divisores suaves */
+
+            /* Cores de Texto */
+            --text-dark: #343a40; /* Texto principal escuro */
+            --text-medium: #6c757d; /* Texto secundário, informações */
+            --text-light: #adb5bd; /* Texto muito claro, dicas */
+
+            /* Cores de Marca/Destaque - Suaves */
+            --brand-main: #5a67d8; /* Um azul mais calmo e profissional */
+            --brand-accent: #7f8de9; /* Uma versão mais clara do azul para hover/ativos */
+            --brand-text-on-dark: #e0e7fa; /* Texto em fundos escuros da marca */
+
+            /* Cores de Status/ABC (mantidas para consistência de paleta) */
+            --status-success: #28a745;
+            --status-warning: #ffc107;
+            --status-danger: #dc3545;
+
+            /* Sombras - Muito sutis */
+            --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-color: var(--bg-primary); /* Fundo geral da página */
+            color: var(--text-dark);
+            display: flex;
+            min-height: 100vh;
+            overflow: hidden; /* Evita scroll desnecessário */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .left-side {
+            flex: 1;
+            background: url('../image/image.png') center / cover no-repeat; /* Ajustado background para cobrir e não repetir */
+            display: flex; /* Para centralizar o conteúdo se houver */
+            align-items: center;
+            justify-content: center;
+            position: relative; /* Para possíveis overlays ou texto */
+        }
+        
+        /* Optional: Add an overlay to the image for better contrast with text if any */
+        .left-side::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3); /* Escurece a imagem levemente */
+        }
+        /* Optional: Add some text over the image */
+        .left-side-content {
+            position: relative; /* Above the overlay */
+            z-index: 1;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+        .left-side-content h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .left-side-content p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+
+
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background-color: var(--bg-primary); /* Fundo principal da área de login */
+        }
+
+        .login-container {
+            background-color: var(--surface-card); /* Fundo branco para o container de login */
+            max-width: 420px; /* Ligeiramente mais largo */
+            width: 100%;
+            padding: 3rem; /* Mais padding */
+            border-radius: 1rem; /* Mais arredondado */
+            box-shadow: var(--shadow-md); /* Sombra consistente */
+            border: 1px solid var(--border-light); /* Borda sutil */
+        }
+
+        h2 {
+            font-size: 2.2rem; /* Título maior */
+            font-weight: 700;
+            color: var(--text-dark); /* Cor de texto padrão */
+            margin-bottom: 0.8rem; /* Ajuste de margem */
+            text-align: center;
+        }
+
+        .login-container p {
+            color: var(--text-medium); /* Cor de texto secundária */
+            margin-bottom: 2.5rem; /* Mais espaço abaixo do parágrafo */
+            text-align: center;
+            font-size: 1.05rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.6rem; /* Mais espaço */
+            font-weight: 600;
+            color: var(--text-dark); /* Cor de texto padrão */
+            font-size: 0.95rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.9rem; /* Mais padding */
+            margin-bottom: 1.2rem; /* Mais espaço */
+            border: 1px solid var(--border-light); /* Borda consistente */
+            border-radius: 0.5rem; /* Mais arredondado */
+            box-sizing: border-box;
+            font-size: 1rem;
+            background-color: var(--bg-primary); /* Fundo claro para inputs */
+            color: var(--text-dark);
+            transition: box-shadow 0.2s, border-color 0.2s, background-color 0.2s;
+        }
+        input:focus {
+            border-color: var(--brand-main); /* Cor da marca no foco */
+            box-shadow: 0 0 0 3px rgba(90, 103, 216, 0.2); /* Sombra suave */
+            outline: none;
+            background-color: var(--surface-card); /* Fundo branco no foco */
+        }
+
+        button.login-button {
+            width: 100%;
+            background-color: var(--brand-main); /* Cor da marca */
+            color: white;
+            padding: 1rem 1.2rem; /* Mais padding */
+            border: none;
+            border-radius: 0.5rem; /* Mais arredondado */
+            cursor: pointer;
+            font-size: 1.1rem; /* Botão maior */
+            font-weight: 700; /* Mais negrito */
+            transition: background-color 0.2s, box-shadow 0.2s, transform 0.2s;
+            box-shadow: var(--shadow-sm); /* Sombra sutil */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        button.login-button:hover {
+            background-color: var(--brand-accent); /* Cor mais clara no hover */
+            transform: translateY(-2px); /* Leve levantamento */
+            box-shadow: var(--shadow-md); /* Sombra maior */
+        }
+        button.login-button:disabled {
+            background-color: #aeb5ed; /* Cor desabilitada mais suave */
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: translateY(0);
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 1.8rem; /* Mais espaço */
+        }
+        .links a {
+            color: var(--brand-main); /* Cor da marca para links */
+            text-decoration: none;
+            font-weight: 600; /* Mais negrito */
+            font-size: 0.95rem;
+            transition: color 0.2s, text-decoration 0.2s;
+        }
+        .links a:hover {
+            color: var(--brand-accent); /* Cor mais clara no hover */
+            text-decoration: underline;
+        }
+
+        #error-msg {
+            color: var(--status-danger); /* Vermelho para erro */
+            background-color: rgba(220, 53, 69, 0.1); /* Fundo vermelho suave */
+            border: 1px solid rgba(220, 53, 69, 0.2); /* Borda vermelha suave */
+            padding: 0.8rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            margin-top: 1.5rem;
+            text-align: center;
+            min-height: 1.2em;
+            display: none; /* Inicia escondido */
+        }
+        #error-msg.show {
+            display: block;
+        }
+
+        /* Pop-up de Boas-Vindas */
+        #welcomePopup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4); /* Fundo semi-transparente */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1010; /* Acima de outros pop-ups se houver */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0s linear 0.3s;
+        }
+
+        #welcomePopup.show {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.3s ease-in-out, visibility 0s linear 0s;
+        }
+
+        .welcome-content {
+            background-color: var(--surface-card);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow-md);
+            text-align: center;
+            max-width: 350px;
+            width: 90%;
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            /* Adicionado para centralizar o conteúdo verticalmente */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #welcomePopup.show .welcome-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .welcome-content h2 {
+            font-size: 2rem;
+            color: var(--brand-main);
+            margin-bottom: 1rem;
+        }
+
+        .welcome-content p {
+            font-size: 1.1rem;
+            color: var(--text-medium);
+            margin-bottom: 1.5rem;
+        }
+
+        .welcome-loader {
+            border: 5px solid rgba(0, 0, 0, 0.1);
+            border-left-color: var(--brand-main);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1.5rem;
+            /* Removido `margin-left: auto; margin-right: auto;` se houver,
+               pois `align-items: center` no pai já faz isso. */
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column; /* Stack image and form vertically */
+            }
+            .left-side {
+                flex: none; /* Remove flex sizing */
+                width: 100%;
+                height: 200px; /* Fixed height for image on small screens */
+            }
+            .left-side-content h1 {
+                font-size: 2.5rem;
+            }
+            .left-side-content p {
+                font-size: 1rem;
+            }
+            main {
+                padding: 1.5rem;
+            }
+            .login-container {
+                padding: 2rem;
+                border-radius: 0.8rem;
+                box-shadow: var(--shadow-md);
+            }
+            h2 {
+                font-size: 1.8rem;
+            }
+            .login-container p {
+                font-size: 0.95rem;
+                margin-bottom: 1.5rem;
+            }
+            label {
+                font-size: 0.9rem;
+            }
+            input {
+                padding: 0.75rem;
+                font-size: 0.95rem;
+                margin-bottom: 1rem;
+            }
+            button.login-button {
+                padding: 0.8rem 1rem;
+                font-size: 1rem;
+            }
+            .links {
+                margin-top: 1.2rem;
+            }
+            .links a {
+                font-size: 0.9rem;
+            }
+            #error-msg {
+                font-size: 0.9rem;
+                padding: 0.6rem 0.8rem;
+                margin-top: 1rem;
+            }
+            .welcome-content {
+                padding: 2rem;
+                border-radius: 0.8rem;
+            }
+            .welcome-content h2 {
+                font-size: 1.8rem;
+            }
+            .welcome-content p {
+                font-size: 1rem;
+                margin-bottom: 1rem;
+            }
+            .welcome-loader {
+                width: 40px;
+                height: 40px;
+                margin-bottom: 1rem;
+                border-width: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <script>
+        (function() {
+            const userData = sessionStorage.getItem('loggedInUser');
+            if (userData) {
+                try {
+                    const user = JSON.parse(userData);
+                    if (user && user.role === 'master') {
+                        window.location.replace('Master/Master.html');
+                    } else if (user && user.role === 'admin') {
+                        window.location.replace('Admin/Admin.html');
+                    } else if (user && user.role === 'user') {
+                        window.location.replace('Cliente/Dashboard.html');
+                    }
+                } catch (e) {
+                    sessionStorage.removeItem('loggedInUser');
+                }
+            }
+        })();
+    </script>
+
+    <div class="left-side">
+        <div class="left-side-content">
+            <h1>SAGE</h1>
+            <p>Gerenciamento inteligente de estoque e compras para sua escola.</p>
+        </div>
+    </div>
+    <main>
+        <section class="login-container">
+            <h2>Bem-Vindo ao SAGE</h2>
+            <p>Faça login para continuar.</p>
+            <form id="loginForm">
+                <div>
+                    <label for="username">Usuário</label>
+                    <input type="text" id="username" name="username" placeholder="Digite seu usuário" required />
+                </div>
+                <div>
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" name="password" placeholder="Digite sua senha" required />
+                </div>
+                <button type="submit" class="login-button">
+                    <i class="fas fa-sign-in-alt"></i> Entrar
+                </button>
+                <p id="error-msg" role="alert"></p>
+            </form>
+            <div class="links">
+                <a href="solicitar-acesso.html">Não tem acesso? Solicite aqui</a>
+            </div>
+        </section>
+    </main>
+
+    <div id="welcomePopup" class="popup-overlay">
+        <div class="welcome-content">
+            <div class="welcome-loader"></div>
+            <h2 id="welcomeTitle"></h2>
+            <p id="welcomeMessage"></p>
+        </div>
+    </div>
+
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const errorMsg = document.getElementById('error-msg');
+        const submitButton = loginForm.querySelector('button');
+        const welcomePopup = document.getElementById('welcomePopup');
+        const welcomeTitle = document.getElementById('welcomeTitle');
+        const welcomeMessage = document.getElementById('welcomeMessage');
+        const apiUrl = 'http://localhost:5141/api/Auth/login'; // VERIFIQUE/AJUSTE ESTA URL
+
+        loginForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            errorMsg.textContent = '';
+            errorMsg.classList.remove('show');
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
+            submitButton.disabled = true;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: username, password: password })
+                });
+
+                const responseData = await response.json();
+
+                if (response.ok) {
+                    if (responseData.forcePasswordReset) {
+                        sessionStorage.setItem('tempUsername', username);
+                        window.location.replace('redefinir-senha.html');
+                        return;
+                    }
+
+                    const user = responseData.user;
+                    sessionStorage.setItem('loggedInUser', JSON.stringify(user));
+
+                    welcomeTitle.textContent = `Bem-Vindo(a), ${user.nomeCompleto || user.username}!`;
+                    welcomeMessage.textContent = 'Redirecionando para sua área...';
+                    welcomePopup.classList.add('show');
+
+                    // Simula um pequeno carregamento antes de redirecionar
+                    setTimeout(() => {
+                        welcomePopup.classList.remove('show'); // Esconde o pop-up antes de redirecionar
+                        if (user && user.role === 'master') {
+                            window.location.replace('Master/Master.html');
+                        } else if (user && user.role === 'admin') {
+                            window.location.replace('Admin/Admin.html');
+                        } else if (user && user.role === 'user') {
+                            window.location.replace('Cliente/Dashboard.html');
+                        } else {
+                            errorMsg.textContent = `Erro: Perfil de usuário '${user.role}' não reconhecido.`;
+                            errorMsg.classList.add('show');
+                        }
+                    }, 1500); // Tempo em milissegundos que o pop-up ficará visível
+
+                } else {
+                    errorMsg.textContent = responseData.message || 'Usuário ou senha inválidos.';
+                    errorMsg.classList.add('show');
+                }
+            } catch (error) {
+                errorMsg.textContent = 'Erro de conexão. Verifique se a API está online.';
+                errorMsg.classList.add('show');
+                console.error('Fetch error:', error);
+            } finally {
+                submitButton.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
+                submitButton.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

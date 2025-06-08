@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análises Detalhadas - SAGE</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* Variáveis de Cores e Estilos - Minimalista e Elegante */
+        :root {
+            /* Paleta Primária - Neutra e Limpa */
+            --bg-primary: #f8f9fa; /* Fundo principal, quase branco */
+            --surface-card: #ffffff; /* Fundo de cartões, branco puro */
+            --border-light: #e0e6ed; /* Bordas e divisores suaves */
+
+            /* Cores de Texto */
+            --text-dark: #343a40; /* Texto principal escuro */
+            --text-medium: #6c757d; /* Texto secundário, informações */
+            --text-light: #adb5bd; /* Texto muito claro, dicas */
+
+            /* Cores de Marca/Destaque - Suaves */
+            --brand-main: #5a67d8; /* Um azul mais calmo e profissional */
+            --brand-accent: #7f8de9; /* Uma versão mais clara do azul para hover/ativos */
+            --brand-text-on-dark: #e0e7fa; /* Texto em fundos escuros da marca */
+
+            /* Cores de Status/ABC - Dessaturadas */
+            --status-success: #28a745; /* Verde para sucesso */
+            --status-warning: #ffc107; /* Amarelo/Laranja para aviso */
+            --status-danger: #dc3545; /* Vermelho para perigo/estoque baixo */
+
+            /* Sombras - Muito sutis */
+            --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-color: var(--bg-primary);
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column; /* Necessário para navbar no topo */
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* --- Navbar Superior (PADRÃO) --- */
+        .navbar-top {
+            background-color: var(--surface-card);
+            border-bottom: 1px solid var(--border-light);
+            padding: 1.2rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-sm);
+            z-index: 1000;
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .navbar-top .logo {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            color: var(--brand-main);
+        }
+
+        .navbar-top nav {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .navbar-top nav a {
+            color: var(--text-medium);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 0.6rem 0.4rem;
+            position: relative;
+            transition: color 0.3s ease, background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            border-radius: 8px;
+        }
+
+        .navbar-top nav a:hover {
+            color: var(--brand-main);
+            background-color: var(--bg-primary);
+        }
+
+        .navbar-top nav a.active {
+            color: var(--brand-main);
+            font-weight: 700;
+            background-color: var(--bg-primary);
+        }
+
+        .navbar-top nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            width: calc(100% - 1rem);
+            height: 2px;
+            background-color: var(--brand-main);
+            border-radius: 1px;
+            transform: translateX(-50%) scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        .navbar-top nav a.active::after,
+        .navbar-top nav a:hover::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+        .navbar-top nav a i {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            transition: color 0.3s ease;
+        }
+        .navbar-top nav a:hover i,
+        .navbar-top nav a.active i {
+            color: var(--brand-main);
+        }
+
+        /* --- Perfil de Usuário no Header (PADRÃO) --- */
+        .user-profile {
+            position: relative;
+        }
+
+        .user-button {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.5rem 1.1rem;
+            border-radius: 999px;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: var(--shadow-sm);
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .user-button:hover {
+            background-color: var(--border-light);
+            box-shadow: var(--shadow-md);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--brand-main);
+            color: var(--brand-text-on-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.3rem;
+            border: 2px solid var(--brand-accent);
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 120%;
+            right: 0;
+            background-color: var(--surface-card);
+            border-radius: 0.8rem;
+            box-shadow: var(--shadow-md);
+            width: 280px;
+            z-index: 101;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+            opacity: 0;
+            transform: translateY(-10px) scale(0.98);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform-origin: top right;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .dropdown-menu > div {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            background-color: var(--bg-primary);
+        }
+
+        .dropdown-menu > div div:first-child {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 1rem;
+        }
+
+        .dropdown-menu > div div:last-child {
+            font-size: 0.85rem;
+            color: var(--text-medium);
+        }
+
+        .dropdown-menu a {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.9rem 1.5rem;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: var(--bg-primary);
+            color: var(--brand-main);
+        }
+        .dropdown-menu a i {
+            color: var(--text-medium);
+            transition: color 0.2s ease;
+        }
+        .dropdown-menu a:hover i {
+            color: var(--brand-main);
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background-color: var(--border-light);
+            margin: 0.6rem 0;
+        }
+
+        /* --- Conteúdo Principal (PADRÃO) --- */
+        .main-content {
+            flex-grow: 1;
+            padding: 2.5rem 3rem;
+            overflow-y: auto;
+            background-color: var(--bg-primary);
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .main-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0;
+            text-align: center;
+        }
+        
+        /* --- Cards (PADRÃO) --- */
+        .card {
+            background-color: var(--surface-card);
+            padding: 2rem 2.5rem;
+            border-radius: 0.8rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .card h2 { /* Título dentro do card */
+            margin-top: 0;
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        .card h2::after { /* Linha de destaque para o título do card */
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 60px;
+            height: 3px;
+            background-color: var(--brand-main);
+            border-radius: 1px;
+        }
+        
+        /* --- Filters Section (PADRÃO) --- */
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.2rem; /* Mais espaçamento */
+            margin-bottom: 1.5rem;
+            align-items: center;
+        }
+        .filters label { 
+            font-weight: 600; 
+            color: var(--text-dark); 
+            font-size: 0.95rem; /* Ajuste */
+        }
+        .filters input, .filters select { 
+            padding: 0.75rem; 
+            border: 1px solid var(--border-light); 
+            border-radius: 0.5rem; /* Mais arredondado */
+            font-size: 1rem; 
+            color: var(--text-dark); 
+            background-color: var(--bg-primary); /* Fundo input */
+            transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+        }
+        .filters input:focus, .filters select:focus {
+            border-color: var(--brand-main);
+            box-shadow: 0 0 0 3px rgba(90, 103, 216, 0.2);
+            outline: none;
+            background-color: var(--surface-card);
+        }
+        .filters select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236c757d' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.75rem center;
+            background-repeat: no-repeat;
+            background-size: 1.25em 1.25em;
+            padding-right: 2.5rem;
+        }
+        .filters button {
+            background-color: var(--brand-main);
+            color: white;
+            padding: 0.8rem 1.5rem; /* Mais padding */
+            border: none;
+            border-radius: 0.5rem; /* Mais arredondado */
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.2s, box-shadow 0.2s, transform 0.2s;
+            font-size: 1rem;
+            box-shadow: var(--shadow-sm);
+        }
+        .filters button:hover {
+            background-color: var(--brand-accent);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* --- Table Styles (PADRÃO) --- */
+        .table-container { 
+            overflow-x: auto; 
+            border-radius: 0.6rem; 
+            border: 1px solid var(--border-light); 
+            background-color: var(--surface-card);
+        }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; }
+        th, td { padding: 1.2rem 1.5rem; text-align: left; border-bottom: 1px solid var(--border-light); white-space: nowrap; }
+        thead { background-color: var(--bg-primary); }
+        th { 
+            font-family: 'Inter', sans-serif; 
+            font-weight: 600; 
+            font-size: 0.85rem; 
+            text-transform: uppercase; 
+            color: var(--text-medium); 
+        }
+        tbody tr:hover { background-color: var(--bg-primary); }
+        tbody tr:last-child td { border-bottom: none; }
+        
+        /* Valores positivos/negativos */
+        .positive-value { color: var(--status-success); font-weight: 600; }
+        .negative-value { color: var(--status-danger); font-weight: 600; }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .navbar-top, .main-content {
+                padding: 1.5rem 2rem;
+            }
+            .navbar-top nav {
+                gap: 1.5rem;
+            }
+            .card {
+                padding: 1.5rem 2rem;
+            }
+            .card h2 {
+                font-size: 1.4rem;
+            }
+            .filters {
+                gap: 0.8rem;
+            }
+            .filters input, .filters select, .filters button {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+            th, td {
+                padding: 1rem 1.2rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .navbar-top {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
+            }
+            .navbar-top .logo {
+                width: 100%;
+                text-align: center;
+                margin-bottom: 1rem;
+            }
+            .navbar-top nav {
+                width: 100%;
+                justify-content: space-around;
+                flex-wrap: wrap;
+                margin-top: 1rem;
+            }
+            .navbar-top nav a {
+                flex-direction: column;
+                font-size: 0.85rem;
+                padding: 0.5rem 0.5rem;
+                gap: 0.3rem;
+            }
+            .navbar-top nav a::after {
+                display: none;
+            }
+            .user-profile {
+                width: 100%;
+                justify-content: center;
+                margin-top: 1.5rem;
+            }
+            .main-title {
+                font-size: 2.2rem;
+            }
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .filters input, .filters select, .filters button {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar-top {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 1rem;
+            }
+            .navbar-top .logo {
+                font-size: 1.8rem;
+            }
+            .navbar-top nav {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.4rem;
+            }
+            .navbar-top nav a {
+                width: 100%;
+                justify-content: flex-start;
+                padding: 0.6rem 0.8rem;
+            }
+            .user-profile {
+                margin-top: 1rem;
+                justify-content: center;
+            }
+            .main-content {
+                padding: 1rem;
+                gap: 1.5rem;
+            }
+            .main-title {
+                font-size: 1.8rem;
+            }
+            .card {
+                padding: 1.2rem 1.5rem;
+                border-radius: 1.2rem;
+            }
+            .card h2 {
+                font-size: 1.2rem;
+                padding-bottom: 0.8rem;
+                margin-bottom: 1.2rem;
+            }
+            .card h2::after {
+                width: 40px;
+                height: 3px;
+            }
+            th, td {
+                padding: 1rem 1rem;
+                font-size: 0.85rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .navbar-top .logo {
+                font-size: 1.6rem;
+            }
+            .user-button {
+                padding: 0.4rem 1rem;
+                gap: 0.6rem;
+            }
+            .user-avatar {
+                width: 38px;
+                height: 38px;
+                font-size: 1.2rem;
+            }
+            .dropdown-menu {
+                width: 250px;
+                right: 5%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar-top">
+        <div class="logo">SAGE</div>
+        <nav>
+            <a href="Master.html">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </a>
+            <a href="Analises.html" class="active">
+                <i class="fas fa-chart-area"></i> Análises
+            </a>
+            <a href="Aprovacao.html">
+                <i class="fas fa-handshake"></i> Aprovação
+            </a>
+            <a href="Confg.html">
+                <i class="fas fa-cogs"></i> Configurações
+            </a>
+        </nav>
+        <div class="user-profile">
+            <button class="user-button" id="user-menu-button">
+                <div class="user-avatar" id="user-avatar">?</div>
+                <span id="user-display-name">Usuário</span>
+            </button>
+            <div class="dropdown-menu" id="user-dropdown">
+                <div>
+                    <div id="dropdown-username">Carregando...</div>
+                    <div id="dropdown-email"></div>
+                </div>
+                <a href="#"><i class="fas fa-key"></i> Alterar Senha</a>
+                <a href="#"><i class="fas fa-image"></i> Alterar Foto de Perfil</a>
+                <div class="dropdown-divider"></div>
+                <a href="#" id="logout-button"><i class="fas fa-sign-out-alt"></i> Sair</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <h1 class="main-title">Análises Detalhadas</h1>
+
+        <section class="card">
+            <h2>Transações Financeiras</h2>
+            <div class="filters">
+                <label for="start-date"><i class="fas fa-calendar-alt"></i> De:</label>
+                <input type="date" id="start-date">
+                <label for="end-date"><i class="fas fa-calendar-alt"></i> Até:</label>
+                <input type="date" id="end-date">
+                <label for="type-filter"><i class="fas fa-filter"></i> Tipo:</label>
+                <select id="type-filter">
+                    <option value="all">Todos</option>
+                    <option value="receita">Receita</option>
+                    <option value="despesa">Despesa</option>
+                </select>
+                <button id="apply-filters"><i class="fas fa-search"></i> Aplicar Filtros</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Descrição</th>
+                            <th>Tipo</th>
+                            <th>Valor</th>
+                            <th>Responsável</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactions-table-body">
+                        </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5141/api'; // VERIFIQUE/AJUSTE ESTA URL
+
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+        }
+
+        /**
+         * Busca e exibe todas as transações financeiras (entradas e saídas) na tabela.
+         * Aplica filtros de data e tipo, se fornecidos.
+         */
+        async function fetchAndDisplayTransactions() {
+            const tableBody = document.getElementById('transactions-table-body');
+            tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 20px;">Carregando transações...</td></tr>`;
+
+            const startDateInput = document.getElementById('start-date');
+            const endDateInput = document.getElementById('end-date');
+            const typeFilter = document.getElementById('type-filter').value;
+
+            const startDate = startDateInput.value;
+            const endDate = endDateInput.value;
+
+            if (!startDate || !endDate) {
+                tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--status-warning);">Por favor, selecione um período de data completo.</td></tr>`;
+                return;
+            }
+            if (new Date(startDate) > new Date(endDate)) {
+                tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--status-danger);">A data inicial não pode ser maior que a data final.</td></tr>`;
+                return;
+            }
+
+
+            try {
+                // Fetch incoming transactions (Receita)
+                const incomingResponse = await fetch(`${API_BASE_URL}/FluxoFinanceiro/entradas-periodo?startDate=${startDate}&endDate=${endDate}`); // VERIFIQUE/AJUSTE ESTA URL
+                const incomingData = await incomingResponse.json();
+                const incomingTransactions = incomingData.map(item => ({
+                    date: new Date(item.dataEntrada),
+                    description: item.descricao,
+                    type: 'Receita',
+                    value: item.valor,
+                    responsible: item.origem || 'Sistema'
+                }));
+
+                // Fetch outgoing transactions (Despesa - Aprovadas ou Recusadas)
+                const outgoingResponse = await fetch(`${API_BASE_URL}/Solicitacao/saidas-periodo?startDate=${startDate}&endDate=${endDate}`); // VERIFIQUE/AJUSTE ESTA URL
+                const outgoingData = await outgoingResponse.json();
+                const outgoingTransactions = outgoingData.map(item => ({
+                    date: new Date(item.dataAcao),
+                    description: `${item.nomeItem} (${item.quantidadeSolicitada} und.) - ${item.status}`,
+                    type: 'Despesa',
+                    value: item.valorUnitario * item.quantidadeSolicitada,
+                    responsible: item.aprovador || item.solicitante // Se aprovado, o aprovador; se recusado/pendente, o solicitante
+                }));
+
+                // Combine and filter transactions
+                let allTransactions = [...incomingTransactions, ...outgoingTransactions];
+
+                if (typeFilter !== 'all') {
+                    allTransactions = allTransactions.filter(t => t.type.toLowerCase() === typeFilter);
+                }
+
+                // Sort transactions by date (most recent first)
+                allTransactions.sort((a, b) => b.date - a.date);
+
+                tableBody.innerHTML = ''; // Clear existing rows
+
+                if (allTransactions.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 20px;">Nenhuma transação encontrada para o período e filtro selecionados.</td></tr>`;
+                    return;
+                }
+
+                allTransactions.forEach(t => {
+                    const valueClass = t.type === 'Receita' ? 'positive-value' : 'negative-value';
+                    const formattedValue = t.type === 'Receita' 
+                        ? `+ ${formatCurrency(t.value)}` 
+                        : `- ${formatCurrency(t.value)}`;
+                    
+                    const row = `
+                        <tr>
+                            <td>${t.date.toLocaleDateString('pt-BR')}</td>
+                            <td>${t.description}</td>
+                            <td>${t.type}</td>
+                            <td class="${valueClass}">${formattedValue}</td>
+                            <td>${t.responsible}</td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+
+            } catch (error) {
+                console.error('Falha ao buscar e exibir transações:', error);
+                tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--status-danger);">Erro ao carregar dados: ${error.message}</td></tr>`;
+            }
+        }
+
+        /**
+         * Inicializa os campos de data com o primeiro e último dia do mês atual.
+         */
+        function setDefaultDates() {
+            const today = new Date();
+            const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+            const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+            document.getElementById('start-date').valueAsDate = firstDayOfMonth;
+            document.getElementById('end-date').valueAsDate = lastDayOfMonth;
+        }
+
+        // --- Funções de Perfil e Menu (PADRÃO) ---
+        function loadUserProfile() {
+            const userString = sessionStorage.getItem('loggedInUser');
+            if (!userString) {
+                console.error('Nenhum usuário logado. Redirecionando para login.');
+                window.location.href = '../login.html'; // Ajuste o caminho para sua tela de login
+                return;
+            }
+            const user = JSON.parse(userString);
+            
+            const avatar = document.getElementById('user-avatar');
+            const displayName = document.getElementById('user-display-name');
+            const dropdownUsername = document.getElementById('dropdown-username');
+            const dropdownEmail = document.getElementById('dropdown-email');
+            
+            if (user.username) {
+                if (avatar) avatar.textContent = user.username.charAt(0).toUpperCase();
+                if (displayName) displayName.textContent = user.username;
+                if (dropdownUsername) dropdownUsername.textContent = user.username;
+            }
+            if (user.email) {
+                if (dropdownEmail) dropdownEmail.textContent = user.email;
+            }
+        }
+
+        function setupUserMenu() {
+            const userMenuButton = document.getElementById('user-menu-button');
+            const userDropdown = document.getElementById('user-dropdown');
+            const logoutButton = document.getElementById('logout-button');
+
+            if (userMenuButton) {
+                userMenuButton.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    userDropdown.classList.toggle('show');
+                });
+            }
+
+            window.addEventListener('click', (event) => {
+                if (userDropdown && userDropdown.classList.contains('show')) {
+                    userDropdown.classList.remove('show');
+                }
+            });
+
+            if(logoutButton) {
+                logoutButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    sessionStorage.removeItem('loggedInUser');
+                    window.location.href = '../login.html'; // Ajuste o caminho
+                });
+            }
+        }
+        
+        // --- Ponto de Entrada Principal ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserProfile();
+            setupUserMenu();
+            setDefaultDates(); // Define as datas padrão
+            fetchAndDisplayTransactions(); // Carrega as transações iniciais
+
+            // Adiciona listeners para os filtros
+            document.getElementById('apply-filters').addEventListener('click', fetchAndDisplayTransactions);
+        });
+    </script>
+</body>
+</html>

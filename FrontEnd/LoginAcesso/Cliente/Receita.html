@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receitas para Merenda Escolar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* Variáveis de Cores e Estilos - Minimalista e Elegante */
+        :root {
+            /* Paleta Primária - Neutra e Limpa */
+            --bg-primary: #f8f9fa; /* Fundo principal, quase branco */
+            --surface-card: #ffffff; /* Fundo de cartões, branco puro */
+            --border-light: #e0e6ed; /* Bordas e divisores suaves */
+
+            /* Cores de Texto */
+            --text-dark: #343a40; /* Texto principal escuro */
+            --text-medium: #6c757d; /* Texto secundário, informações */
+            --text-light: #adb5bd; /* Texto muito claro, dicas */
+
+            /* Cores de Marca/Destaque - Suaves */
+            --brand-main: #5a67d8; /* Um azul mais calmo e profissional */
+            --brand-accent: #7f8de9; /* Uma versão mais clara do azul para hover/ativos */
+            --brand-text-on-dark: #e0e7fa; /* Texto em fundos escuros da marca */
+
+            /* Cores de Status/ABC - Dessaturadas */
+            --status-success: #28a745; /* Verde para sucesso */
+            --status-warning: #ffc107; /* Amarelo/Laranja para aviso */
+            --status-danger: #dc3545; /* Vermelho para perigo/estoque baixo */
+
+            /* Cores ABC para o gráfico (mantidas para consistência de paleta) */
+            --abc-a-color: #4CAF50;
+            --abc-b-color: #FFC107;
+            --abc-c-color: #e6525a;
+
+            /* Sombras - Muito sutis */
+            --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-color: var(--bg-primary);
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* --- Navbar Superior (PADRÃO) --- */
+        .navbar-top {
+            background-color: var(--surface-card);
+            border-bottom: 1px solid var(--border-light);
+            padding: 1.2rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-sm);
+            z-index: 1000;
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .navbar-top .logo {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            color: var(--brand-main);
+        }
+
+        .navbar-top nav {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .navbar-top nav a {
+            color: var(--text-medium);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 0.6rem 0.4rem;
+            position: relative;
+            transition: color 0.3s ease, background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            border-radius: 8px;
+        }
+
+        .navbar-top nav a:hover {
+            color: var(--brand-main);
+            background-color: var(--bg-primary);
+        }
+
+        .navbar-top nav a.active {
+            color: var(--brand-main);
+            font-weight: 700;
+            background-color: var(--bg-primary);
+        }
+
+        .navbar-top nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            width: calc(100% - 1rem);
+            height: 2px;
+            background-color: var(--brand-main);
+            border-radius: 1px;
+            transform: translateX(-50%) scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        .navbar-top nav a.active::after,
+        .navbar-top nav a:hover::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+        .navbar-top nav a i {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            transition: color 0.3s ease;
+        }
+        .navbar-top nav a:hover i,
+        .navbar-top nav a.active i {
+            color: var(--brand-main);
+        }
+
+        /* --- Perfil de Usuário no Header (PADRÃO) --- */
+        .user-profile {
+            position: relative;
+        }
+
+        .user-button {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.5rem 1.1rem;
+            border-radius: 999px;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: var(--shadow-sm);
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .user-button:hover {
+            background-color: var(--border-light);
+            box-shadow: var(--shadow-md);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--brand-main);
+            color: var(--brand-text-on-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.3rem;
+            border: 2px solid var(--brand-accent);
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 120%;
+            right: 0;
+            background-color: var(--surface-card);
+            border-radius: 0.8rem;
+            box-shadow: var(--shadow-md);
+            width: 280px;
+            z-index: 101;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+            opacity: 0;
+            transform: translateY(-10px) scale(0.98);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform-origin: top right;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .dropdown-menu > div {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            background-color: var(--bg-primary);
+        }
+
+        .dropdown-menu > div div:first-child {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 1rem;
+        }
+
+        .dropdown-menu > div div:last-child {
+            font-size: 0.85rem;
+            color: var(--text-medium);
+        }
+
+        .dropdown-menu a {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.9rem 1.5rem;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: var(--bg-primary);
+            color: var(--brand-main);
+        }
+        .dropdown-menu a i {
+            color: var(--text-medium);
+            transition: color 0.2s ease;
+        }
+        .dropdown-menu a:hover i {
+            color: var(--brand-main);
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background-color: var(--border-light);
+            margin: 0.6rem 0;
+        }
+
+        /* --- Conteúdo Principal (PADRÃO) --- */
+        .main-content {
+            flex-grow: 1;
+            padding: 2.5rem 3rem;
+            overflow-y: auto;
+            background-color: var(--bg-primary);
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .main-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0;
+            text-align: center;
+        }
+        
+        /* --- Receitas Grid (PADRÃO) --- */
+        .receitas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .card-receita {
+            background-color: var(--surface-card);
+            border-radius: 0.8rem; /* Consistente com outros cards */
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border-light);
+        }
+
+        .card-receita:hover {
+            transform: translateY(-5px); /* Efeito suave */
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-imagem {
+            position: relative;
+        }
+        .card-imagem img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            /* Remover border-radius aqui para que o border-radius do card-receita se aplique */
+        }
+        .card-tipo-refeicao {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background-color: rgba(0, 0, 0, 0.4); /* Fundo um pouco mais suave */
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            backdrop-filter: blur(3px); /* Blur mais suave */
+        }
+
+        .card-conteudo {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-conteudo h2 {
+            font-family: 'Inter', sans-serif; /* Consistência da fonte */
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            font-size: 1.4rem;
+            color: var(--text-dark); /* Cor de texto padrão */
+            font-weight: 600; /* Consistência */
+        }
+
+        .card-conteudo p {
+            flex-grow: 1;
+            color: var(--text-medium); /* Cor de texto padrão */
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+        
+        .card-acoes {
+            display: flex;
+            gap: 1rem;
+            margin-top: auto;
+        }
+
+        .card-acoes button {
+            flex-grow: 1;
+            padding: 0.8rem 1rem;
+            border-radius: 0.5rem; /* Consistente */
+            border: 1px solid; /* Borda visível para botões transparentes */
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-ver-receita {
+            background-color: var(--brand-main); /* Cor da marca */
+            color: white;
+            border-color: var(--brand-main); /* Borda na cor da marca */
+        }
+        .btn-ver-receita:hover {
+            background-color: var(--brand-accent); /* Cor mais clara no hover */
+            border-color: var(--brand-accent);
+        }
+
+        .btn-imprimir {
+            background-color: transparent;
+            color: var(--brand-main); /* Cor da marca */
+            border-color: var(--brand-main); /* Cor da marca */
+        }
+        .btn-imprimir:hover {
+            background-color: var(--brand-main); /* Cor da marca no hover */
+            color: white;
+        }
+        
+        /* Modal Styles (PADRÃO) */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.4); /* Fundo escuro mais suave */
+            display: flex;
+            justify-content: center; align-items: center; z-index: 1000;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s ease-in-out;
+        }
+        .modal-overlay.ativo { opacity: 1; visibility: visible; }
+
+        .modal-container {
+            background-color: var(--surface-card); padding: 2.5rem; border-radius: 0.8rem; /* Consistente */
+            box-shadow: var(--shadow-md); /* Sombra consistente */
+            width: 90%; max-width: 800px; max-height: 90vh;
+            overflow-y: auto; position: relative;
+            transform: scale(0.95); transition: transform 0.3s ease;
+            border: 1px solid var(--border-light); /* Borda consistente */
+        }
+        .modal-overlay.ativo .modal-container { transform: scale(1); }
+
+        .modal-fechar {
+            position: absolute; top: 1rem; right: 1rem;
+            background: var(--bg-primary); border-radius: 50%; /* Cor do fundo e arredondamento */
+            width: 40px; height: 40px;
+            border: 1px solid var(--border-light); font-size: 1.5rem; /* Ícone maior */
+            cursor: pointer; color: var(--text-medium); /* Cor do texto */
+            display: flex; align-items: center; justify-content: center;
+            transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+        }
+        .modal-fechar:hover { 
+            background-color: var(--border-light); 
+            color: var(--text-dark); 
+            box-shadow: var(--shadow-sm);
+        }
+        .modal-conteudo h2 { 
+            font-family: 'Inter', sans-serif; /* Consistência */
+            margin-top: 0; font-size: 2.2rem; color: var(--text-dark); /* Cor de texto */
+            padding-bottom: 0.8rem; border-bottom: 1px solid var(--border-light); /* Linha divisória */
+            margin-bottom: 1.5rem;
+        }
+        .modal-conteudo img { width: 100%; max-height: 300px; object-fit: cover; border-radius: 0.5rem; margin-bottom: 2rem; }
+        .modal-detalhes { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; }
+        .modal-detalhes h3 {
+            font-family: 'Inter', sans-serif; /* Consistência */
+            color: var(--brand-main); /* Cor da marca */
+            border-bottom: 2px solid var(--brand-accent); /* Linha de destaque */
+            padding-bottom: 0.5rem; margin-bottom: 1rem; font-weight: 600;
+        }
+        .modal-detalhes ul, .modal-detalhes ol { 
+            padding-left: 20px; line-height: 1.8; 
+            color: var(--text-dark); /* Cor do texto da lista */
+        }
+        .modal-detalhes li::marker { color: var(--brand-main); } /* Cor do marcador */
+        .modal-acoes { text-align: center; margin-top: 2rem; }
+        .modal-acoes button {
+            /* Usar estilos dos botões de ação ou definir específicos para modal */
+            padding: 0.8rem 1.8rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            background-color: var(--brand-main);
+            color: white;
+            border: 1px solid var(--brand-main);
+        }
+        .modal-acoes button:hover {
+            background-color: var(--brand-accent);
+            border-color: var(--brand-accent);
+        }
+        
+        /* Estilos de Impressão (Mantidos e Adaptados) */
+        @media print {
+            body { display: block; background-color: white; }
+            .navbar-top, .main-title, .header-actions, .receitas-grid, .modal-fechar, .modal-acoes, footer { display: none !important; }
+            
+            /* Mostrar apenas o conteúdo do modal para impressão */
+            #modal-container {
+                display: block !important;
+                position: static !important;
+                transform: none !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+                background-color: white !important;
+                box-shadow: none !important;
+                border: none !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                max-height: none !important;
+                overflow-y: visible !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            #modal-container .modal-conteudo h2 {
+                color: var(--text-dark) !important;
+                border-bottom-color: var(--border-light) !important;
+            }
+            #modal-container .modal-detalhes h3 {
+                color: var(--text-dark) !important;
+                border-bottom-color: var(--border-light) !important;
+            }
+            #modal-container .modal-detalhes ul,
+            #modal-container .modal-detalhes ol {
+                color: var(--text-dark) !important;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .navbar-top, .main-content {
+                padding: 1.5rem 2rem;
+            }
+            .navbar-top nav {
+                gap: 1.5rem;
+            }
+            .receitas-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            }
+            .card-receita {
+                padding: 1rem;
+            }
+            .card-conteudo h2 {
+                font-size: 1.25rem;
+            }
+            .card-conteudo p {
+                font-size: 0.9rem;
+            }
+            .card-acoes button {
+                padding: 0.7rem 0.8rem;
+                font-size: 0.85rem;
+            }
+            .modal-container {
+                padding: 2rem;
+            }
+            .modal-conteudo h2 {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .navbar-top {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
+            }
+            .navbar-top .logo {
+                width: 100%;
+                text-align: center;
+                margin-bottom: 1rem;
+            }
+            .navbar-top nav {
+                width: 100%;
+                justify-content: space-around;
+                flex-wrap: wrap;
+                margin-top: 1rem;
+            }
+            .navbar-top nav a {
+                flex-direction: column;
+                font-size: 0.85rem;
+                padding: 0.5rem 0.5rem;
+                gap: 0.3rem;
+            }
+            .navbar-top nav a::after {
+                display: none;
+            }
+            .user-profile {
+                width: 100%;
+                justify-content: center;
+                margin-top: 1.5rem;
+            }
+            .main-title {
+                font-size: 2.2rem;
+            }
+            .receitas-grid {
+                grid-template-columns: 1fr;
+            }
+            .modal-container {
+                max-width: 600px;
+            }
+            .modal-detalhes {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar-top {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 1rem;
+            }
+            .navbar-top .logo {
+                font-size: 1.8rem;
+            }
+            .navbar-top nav {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.4rem;
+            }
+            .navbar-top nav a {
+                width: 100%;
+                justify-content: flex-start;
+                padding: 0.6rem 0.8rem;
+            }
+            .user-profile {
+                margin-top: 1rem;
+                justify-content: center;
+            }
+            .main-content {
+                padding: 1rem;
+                gap: 1.5rem;
+            }
+            .main-title {
+                font-size: 1.8rem;
+            }
+            .card-receita {
+                padding: 0.8rem;
+            }
+            .card-conteudo h2 {
+                font-size: 1.1rem;
+            }
+            .card-conteudo p {
+                font-size: 0.85rem;
+            }
+            .card-acoes button {
+                font-size: 0.75rem;
+                padding: 0.6rem 0.7rem;
+            }
+            .modal-container {
+                padding: 1.5rem;
+            }
+            .modal-conteudo h2 {
+                font-size: 1.6rem;
+            }
+            .modal-fechar {
+                width: 32px;
+                height: 32px;
+                font-size: 1.2rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .navbar-top .logo {
+                font-size: 1.6rem;
+            }
+            .user-button {
+                padding: 0.4rem 1rem;
+                gap: 0.6rem;
+            }
+            .user-avatar {
+                width: 38px;
+                height: 38px;
+                font-size: 1.2rem;
+            }
+            .dropdown-menu {
+                width: 250px;
+                right: 5%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="navbar-top">
+        <div class="logo">SAGE</div>
+        <nav>
+            <a href="Dashboard.html">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </a>
+            <a href="solicitar-itens.html">
+                <i class="fas fa-file-invoice"></i> Solicitar Itens
+            </a>
+            <a href="Receita.html" class="active">
+                <i class="fas fa-utensils"></i> Cardápio
+            </a>
+            <a href="minhas-solicitacoes.html">
+                <i class="fas fa-clipboard-list"></i> Minhas Solicitações
+            </a>
+            </nav>
+        <div class="user-profile" id="user-profile-placeholder">
+            </div>
+    </header>
+
+    <main class="main-content">
+        <h1 class="main-title">Receitas para Merenda Escolar</h1>
+        <section id="receitas-grid" class="receitas-grid"></section>
+    </main>
+
+    <div id="modal-receita" class="modal-overlay">
+        <div id="modal-container" class="modal-container">
+            </div>
+    </div>
+
+    <script>
+    const receitas = [
+        {
+            id: 1,
+            titulo: "Macarronada à Bolonhesa",
+            tipo: "Almoço",
+            descricao: "Um clássico irresistível, enriquecido com legumes para mais nutrientes e sabor.",
+            imagem: "https://images.pexels.com/photos/128408/pexels-photo-128408.jpeg?auto=compress&cs=tinysrgb&w=600",
+            ingredientes: [ "25kg de macarrão (parafuso ou penne)", "30kg de carne moída (patinho)", "10kg de cenoura ralada", "10kg de abobrinha ralada", "15 latas grandes de tomate pelado", "5kg de cebola picada", "1kg de alho picado", "Azeite e sal a gosto" ],
+            preparo: [ "Cozinhe o macarrão em água e sal conforme as instruções da embalagem. Escorra e reserve.", "Em panelas grandes, refogue a cebola e o alho no azeite até dourar. Adicione a carne moída e cozinhe bem.", "Acrescente a cenoura e a abobrinha raladas e refogue por mais 10 minutos para que os legumes cozinhem.", "Adicione o tomate pelado, amasse com uma colher, tempere com sal e deixe o molho apurar em fogo baixo por pelo menos 30 minutos.", "Sirva o molho sobre o macarrão cozido, garantindo que todas as porções fiquem bem servidas." ],
+            nutrientes: "Prato completo com equilíbrio de carboidratos (energia), proteínas (construção muscular) e vitaminas dos legumes."
+        },
+        {
+            id: 2,
+            titulo: "Galinhada Simples de Escola",
+            tipo: "Almoço",
+            descricao: "Uma refeição completa em uma só panela. Prática, saborosa e muito nutritiva.",
+            imagem: "https://images.pexels.com/photos/1624487/pexels-photo-1624487.jpeg?auto=compress&cs=tinysrgb&w=600",
+            ingredientes: [ "40kg de frango em pedaços (coxa e sobrecoxa)", "25kg de arroz", "5kg de cenoura em cubos", "3kg de pimentão picado", "5kg de cebola picada", "1kg de alho picado", "Açafrão-da-terra (cúrcuma), cheiro-verde e sal a gosto", "Óleo para refogar" ],
+            preparo: [ "Tempere o frango com sal, alho e pimenta. Em panelões, doure os pedaços de frango no óleo.", "Retire o frango e, na mesma panela, refogue a cebola e o restante do alho. Adicione o arroz e o açafrão, e refogue bem.", "Volte com o frango para a panela, adicione a cenoura, o pimentão e cubra com água fervente (o dobro do volume do arroz).", "Cozinhe em fogo médio até a água secar e o arroz e o frango estarem macios.", "Finalize com cheiro-verde picado por cima." ],
+            nutrientes: "Rico em proteína (frango), carboidrato (arroz) e vitaminas essenciais. O açafrão é um excelente anti-inflamatório."
+        },
+        {
+            id: 3,
+            titulo: "Sopa de Legumes com Carne",
+            tipo: "Almoço",
+            descricao: "Opção quentinha e reconfortante, ideal para os dias mais frios. Cheia de vitaminas.",
+            imagem: "https://images.pexels.com/photos/539451/pexels-photo-539451.jpeg?auto=compress&cs=tinysrgb&w=600",
+            ingredientes: [ "15kg de carne moída", "15kg de batata em cubos", "10kg de cenoura em cubos", "10kg de mandioquinha em cubos", "5kg de macarrão para sopa (padre nosso)", "5kg de cebola picada", "1kg de alho picado", "Sal e cheiro-verde a gosto" ],
+            preparo: [ "Em panelas grandes, refogue a carne moída com cebola e alho até dourar.", "Adicione os legumes (batata, cenoura, mandioquinha) e cubra com água. Tempere com sal.", "Deixe cozinhar até os legumes ficarem macios.", "Adicione o macarrão e cozinhe pelo tempo indicado na embalagem.", "Acerte o sal e finalize com cheiro-verde fresco." ],
+            nutrientes: "Refeição leve e de fácil digestão, fonte de proteínas, carboidratos e um mix de vitaminas e minerais essenciais."
+        },
+        {
+            id: 4,
+            titulo: "Bolo de Fubá Cremoso",
+            tipo: "Lanche",
+            descricao: "Um lanche da tarde clássico, econômico e que traz um gostinho de casa para as crianças.",
+            imagem: "https://images.pexels.com/photos/1070850/pexels-photo-1070850.jpeg?auto=compress&cs=tinysrgb&w=600",
+            ingredientes: [ "10kg de fubá mimoso", "10kg de farinha de trigo", "15kg de açúcar", "15 litros de leite", "5 litros de óleo", "200 ovos", "500g de fermento em pó", "Erva-doce a gosto (opcional)" ],
+            preparo: [ "Em recipientes grandes, misture os ingredientes secos: fubá, farinha, açúcar e fermento.", "Adicione os ingredientes líquidos: leite, óleo e os ovos levemente batidos. Misture bem até a massa ficar homogênea.", "Se desejar, adicione a erva-doce.", "Despeje em assadeiras grandes e untadas.", "Asse em forno industrial pré-aquecido a 180°C por cerca de 45-50 minutos, ou até dourar." ],
+            nutrientes: "Fonte de energia rápida (carboidratos) para as brincadeiras e atividades da tarde."
+        }
+    ];
+
+    const receitasGrid = document.getElementById('receitas-grid');
+    const modal = document.getElementById('modal-receita');
+    const modalContainer = document.getElementById('modal-container');
+
+    function renderizarCards() {
+        receitasGrid.innerHTML = '';
+        receitas.sort((a,b) => a.id - b.id).forEach(receita => {
+            const cardHTML = `
+                <article class="card-receita">
+                    <div class="card-imagem">
+                        <div class="card-tipo-refeicao">${receita.tipo}</div>
+                        <img src="${receita.imagem}" alt="${receita.titulo}" onerror="this.onerror=null;this.src='https://placehold.co/600x400/cccccc/ffffff?text=Imagem+Indisponível';">
+                    </div>
+                    <div class="card-conteudo">
+                        <h2>${receita.titulo}</h2>
+                        <p>${receita.descricao}</p>
+                        <div class="card-acoes">
+                            <button class="btn-ver-receita" data-id="${receita.id}"><i class="fas fa-eye"></i> Ver Receita</button>
+                            <button class="btn-imprimir" data-id="${receita.id}"><i class="fas fa-print"></i> Imprimir</button>
+                        </div>
+                    </div>
+                </article>
+            `;
+            receitasGrid.innerHTML += cardHTML;
+        });
+    }
+    
+    function abrirModal(idReceita) {
+        const receita = receitas.find(r => r.id === idReceita);
+        if (!receita) return;
+
+        modalContainer.innerHTML = `
+            <button class="modal-fechar" id="modal-fechar-btn"><i class="fas fa-times"></i></button>
+            <div class="modal-conteudo">
+                <h2>${receita.titulo}</h2>
+                <img src="${receita.imagem}" alt="${receita.titulo}" onerror="this.onerror=null;this.src='https://placehold.co/600x400/cccccc/ffffff?text=Imagem+Indisponível';">
+                
+                <div class="modal-detalhes">
+                    <div>
+                        <h3>Ingredientes (Rendimento: ~500 porções)</h3>
+                        <ul>
+                            ${receita.ingredientes.map(ing => `<li>${ing}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Modo de Preparo</h3>
+                        <ol>
+                            ${receita.preparo.map(passo => `<li>${passo}</li>`).join('')}
+                        </ol>
+                    </div>
+                    <div>
+                        <h3>Informações Nutricionais</h3>
+                        <p>${receita.nutrientes}</p>
+                    </div>
+                </div>
+                <div class="modal-acoes">
+                    <button class="btn-ver-receita" id="modal-imprimir-btn"><i class="fas fa-print"></i> Imprimir Receita</button>
+                </div>
+            </div>
+        `;
+
+        modal.classList.add('ativo');
+    }
+
+    function fecharModal() {
+        modal.classList.remove('ativo');
+    }
+    
+    function imprimirReceita() {
+        modalContainer.classList.add('modal-impressao');
+        window.print();
+        modalContainer.classList.remove('modal-impressao');
+    }
+
+    receitasGrid.addEventListener('click', (event) => {
+        const targetButton = event.target.closest('button');
+        if (!targetButton) return;
+
+        const id = parseInt(targetButton.dataset.id);
+        if (isNaN(id)) return; // Ensure id is a valid number
+        
+        if (targetButton.classList.contains('btn-ver-receita')) {
+            abrirModal(id);
+        }
+        if (targetButton.classList.contains('btn-imprimir')) {
+            abrirModal(id);
+            setTimeout(imprimirReceita, 100);
+        }
+    });
+
+    modal.addEventListener('click', (event) => {
+        if (event.target.id === 'modal-receita' || event.target.id === 'modal-fechar-btn' || event.target.closest('#modal-fechar-btn')) {
+            fecharModal();
+        }
+        if (event.target.id === 'modal-imprimir-btn' || event.target.closest('#modal-imprimir-btn')) {
+            imprimirReceita();
+        }
+    });
+    
+    // --- Funções de Perfil de Usuário (PADRÃO) ---
+    function loadUserProfile() {
+        const userString = sessionStorage.getItem('loggedInUser');
+        if (!userString) {
+            console.error('Nenhum usuário logado. Redirecionando para login.');
+            window.location.href = '../login.html'; // Garante que apenas usuários logados acessem
+            return;
+        }
+        const user = JSON.parse(userString);
+        
+        const userProfilePlaceholder = document.getElementById('user-profile-placeholder');
+        if (userProfilePlaceholder) {
+            userProfilePlaceholder.innerHTML = `
+                <button class="user-button" id="user-menu-button">
+                    <div class="user-avatar">${user.username ? user.username.charAt(0).toUpperCase() : '?'}</div>
+                    <span id="user-display-name">${user.username || 'Usuário'}</span>
+                </button>
+                <div class="dropdown-menu" id="user-dropdown">
+                    <div>
+                        <div id="dropdown-username">${user.username || 'Carregando...'}</div>
+                        <div id="dropdown-email">${user.email || ''}</div>
+                    </div>
+                    <a href="#"><i class="fas fa-key"></i> Alterar Senha</a>
+                    <a href="#"><i class="fas fa-image"></i> Alterar Foto de Perfil</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" id="logout-button"><i class="fas fa-sign-out-alt"></i> Sair</a>
+                </div>
+            `;
+            setupUserMenu();
+        }
+    }
+
+    // --- Função para controlar o menu dropdown do usuário (PADRÃO) ---
+    function setupUserMenu() {
+        const userMenuButton = document.getElementById('user-menu-button');
+        const userDropdown = document.getElementById('user-dropdown');
+        const logoutButton = document.getElementById('logout-button');
+        
+        if (userMenuButton && userDropdown) {
+            userMenuButton.addEventListener('click', (event) => {
+                event.stopPropagation();
+                userDropdown.classList.toggle('show');
+            });
+            
+            window.addEventListener('click', (e) => {
+                if (userDropdown.classList.contains('show') && !userDropdown.contains(e.target) && !userMenuButton.contains(e.target)) {
+                    userDropdown.classList.remove('show');
+                }
+            });
+        }
+        if(logoutButton) {
+            logoutButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                sessionStorage.removeItem('loggedInUser');
+                window.location.href = '../login.html';
+            });
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        renderizarCards();
+        loadUserProfile();
+    });
+
+    </script>
+</body>
+</html>

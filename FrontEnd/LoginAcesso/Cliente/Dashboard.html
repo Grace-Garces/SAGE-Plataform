@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard SAGE - Usuário</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* Variáveis de Cores e Estilos - Minimalista e Elegante */
+        :root {
+            /* Paleta Primária - Neutra e Limpa */
+            --bg-primary: #f8f9fa; /* Fundo principal, quase branco */
+            --surface-card: #ffffff; /* Fundo de cartões, branco puro */
+            --border-light: #e0e6ed; /* Bordas e divisores suaves */
+
+            /* Cores de Texto */
+            --text-dark: #343a40; /* Texto principal escuro */
+            --text-medium: #6c757d; /* Texto secundário, informações */
+            --text-light: #adb5bd; /* Texto muito claro, dicas */
+
+            /* Cores de Marca/Destaque - Suaves */
+            --brand-main: #5a67d8; /* Um azul mais calmo e profissional */
+            --brand-accent: #7f8de9; /* Uma versão mais clara do azul para hover/ativos */
+            --brand-text-on-dark: #e0e7fa; /* Texto em fundos escuros da marca */
+
+            /* Cores de Status/ABC - Dessaturadas */
+            --status-success: #28a745; /* Verde para sucesso */
+            --status-warning: #ffc107; /* Amarelo/Laranja para aviso */
+            --status-danger: #dc3545; /* Vermelho para perigo/estoque baixo */
+
+            /* Cores ABC para o gráfico */
+            --abc-a-color: #4CAF50;   /* Verde mais suave */
+            --abc-b-color: #FFC107;   /* Laranja suave */
+            --abc-c-color: #e6525a;   /* Vermelho terroso/suave */
+
+            /* Sombras - Muito sutis */
+            --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-color: var(--bg-primary);
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* --- Navbar Superior (PADRÃO) --- */
+        .navbar-top {
+            background-color: var(--surface-card);
+            border-bottom: 1px solid var(--border-light);
+            padding: 1.2rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-sm);
+            z-index: 1000;
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .navbar-top .logo {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            color: var(--brand-main);
+        }
+
+        .navbar-top nav {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .navbar-top nav a {
+            color: var(--text-medium);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 0.6rem 0.4rem;
+            position: relative;
+            transition: color 0.3s ease, background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            border-radius: 8px;
+        }
+
+        .navbar-top nav a:hover {
+            color: var(--brand-main);
+            background-color: var(--bg-primary);
+        }
+
+        .navbar-top nav a.active {
+            color: var(--brand-main);
+            font-weight: 700;
+            background-color: var(--bg-primary);
+        }
+
+        .navbar-top nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            width: calc(100% - 1rem);
+            height: 2px;
+            background-color: var(--brand-main);
+            border-radius: 1px;
+            transform: translateX(-50%) scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        .navbar-top nav a.active::after,
+        .navbar-top nav a:hover::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+        .navbar-top nav a i {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            transition: color 0.3s ease;
+        }
+        .navbar-top nav a:hover i,
+        .navbar-top nav a.active i {
+            color: var(--brand-main);
+        }
+
+        /* --- Perfil de Usuário no Header (PADRÃO) --- */
+        .user-profile {
+            position: relative;
+        }
+
+        .user-button {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.5rem 1.1rem;
+            border-radius: 999px;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: var(--shadow-sm);
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .user-button:hover {
+            background-color: var(--border-light);
+            box-shadow: var(--shadow-md);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--brand-main);
+            color: var(--brand-text-on-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.3rem;
+            border: 2px solid var(--brand-accent);
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 120%;
+            right: 0;
+            background-color: var(--surface-card);
+            border-radius: 0.8rem;
+            box-shadow: var(--shadow-md);
+            width: 280px;
+            z-index: 101;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+            opacity: 0;
+            transform: translateY(-10px) scale(0.98);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform-origin: top right;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .dropdown-menu > div {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            background-color: var(--bg-primary);
+        }
+
+        .dropdown-menu > div div:first-child {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 1rem;
+        }
+
+        .dropdown-menu > div div:last-child {
+            font-size: 0.85rem;
+            color: var(--text-medium);
+        }
+
+        .dropdown-menu a {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.9rem 1.5rem;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: var(--bg-primary);
+            color: var(--brand-main);
+        }
+        .dropdown-menu a i {
+            color: var(--text-medium);
+            transition: color 0.2s ease;
+        }
+        .dropdown-menu a:hover i {
+            color: var(--brand-main);
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background-color: var(--border-light);
+            margin: 0.6rem 0;
+        }
+
+        /* --- Conteúdo Principal (PADRÃO) --- */
+        .main-content {
+            flex-grow: 1;
+            padding: 2.5rem 3rem;
+            overflow-y: auto;
+            background-color: var(--bg-primary);
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .main-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0;
+            text-align: center;
+        }
+
+        /* --- Cards (PADRÃO) --- */
+        .card {
+            background-color: var(--surface-card);
+            padding: 2rem 2.5rem;
+            border-radius: 0.8rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .card h2 { /* Título dentro do card */
+            margin-top: 0;
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        .card h2::after { /* Linha de destaque para o título do card */
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 60px;
+            height: 3px;
+            background-color: var(--brand-main);
+            border-radius: 1px;
+        }
+        
+        /* --- Summary Grid (PADRÃO) --- */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem; /* Mantido para espaçamento com a próxima seção */
+        }
+        .stat-card {
+            background-color: var(--surface-card);
+            padding: 1.5rem;
+            border-radius: 0.8rem;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border: 1px solid var(--border-light);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+        .stat-card .icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 0.6rem; /* Ajustado */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .stat-card .icon.total-items { background-color: rgba(90, 103, 216, 0.1); color: var(--brand-main); } /* Azul suave */
+        .stat-card .icon.total-value { background-color: rgba(40, 167, 69, 0.1); color: var(--status-success); } /* Verde suave */
+
+        .stat-card .info p { 
+            margin: 0; 
+            color: var(--text-medium); 
+            font-weight: 600; 
+            font-size: 0.9rem;
+        }
+        .stat-card .info span { 
+            font-family: 'Inter', sans-serif; /* Consistência da fonte */
+            font-size: 1.75rem; 
+            font-weight: 700; 
+            color: var(--text-dark); 
+        }
+        
+        /* --- ABC Categories (PADRÃO) --- */
+        .abc-columns {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        .abc-category {
+            background-color: var(--bg-primary); /* Fundo claro para as categorias */
+            padding: 1.5rem;
+            border-radius: 0.8rem;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-sm);
+        }
+        .abc-category h3 {
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0 0 1rem 0;
+            border-bottom: 2px solid;
+            padding-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        .abc-category h3 .item-count { font-size: 0.9rem; font-weight: 500; color: var(--text-medium); }
+        #category-a h3 { color: var(--abc-a-color); border-color: var(--abc-a-color); } 
+        #category-b h3 { color: var(--abc-b-color); border-color: var(--abc-b-color); } 
+        #category-c h3 { color: var(--abc-c-color); border-color: var(--abc-c-color); }
+        
+        .item-list { list-style: none; padding: 0; max-height: 250px; overflow-y: auto; }
+        .item-list li { display: flex; flex-direction: column; gap: 0.25rem; padding: 0.75rem 0; border-bottom: 1px solid var(--border-light); }
+        .item-list li:last-child { border-bottom: none; }
+        .item-list .item-info { display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 0.25rem; }
+        .item-list .progress-bar {
+            width: 100%;
+            height: 6px;
+            background-color: var(--border-light);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .item-list .progress-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease-out;
+        }
+        #list-a .progress-bar-fill { background-color: var(--abc-a-color); }
+        #list-b .progress-bar-fill { background-color: var(--abc-b-color); }
+        #list-c .progress-bar-fill { background-color: var(--abc-c-color); }
+
+        /* --- Table Styles (PADRÃO) --- */
+        .table-container { overflow-x: auto; border-radius: 0.6rem; border: 1px solid var(--border-light); background-color: var(--surface-card);} /* Adicionado border e background */
+        table { width: 100%; border-collapse: separate; border-spacing: 0; } /* Ajustado para border-spacing 0 */
+        th, td { padding: 1.2rem 1.5rem; text-align: left; border-bottom: 1px solid var(--border-light); white-space: nowrap; } /* Ajustado padding e borda */
+        thead { background-color: var(--bg-primary); } /* Fundo do cabeçalho */
+        th { 
+            font-family: 'Inter', sans-serif; 
+            font-weight: 600; 
+            font-size: 0.85rem; 
+            text-transform: uppercase; 
+            color: var(--text-medium); 
+        }
+        tbody tr:hover { background-color: var(--bg-primary); } /* Fundo leve no hover */
+        tbody tr:last-child td { border-bottom: none; }
+        
+        .classification-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 0.7rem;
+            color: white;
+            text-align: center;
+            border: 1px solid transparent;
+        }
+        /* As cores são definidas no JS */
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .navbar-top, .main-content {
+                padding: 1.5rem 2rem;
+            }
+            .navbar-top nav {
+                gap: 1.5rem;
+            }
+            .stat-card, .card {
+                padding: 1.5rem 2rem;
+            }
+            .card h2 {
+                font-size: 1.4rem;
+            }
+            th, td {
+                padding: 1rem 1.2rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .navbar-top {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
+            }
+            .navbar-top .logo {
+                width: 100%;
+                text-align: center;
+                margin-bottom: 1rem;
+            }
+            .navbar-top nav {
+                width: 100%;
+                justify-content: space-around;
+                flex-wrap: wrap;
+                margin-top: 1rem;
+            }
+            .navbar-top nav a {
+                flex-direction: column;
+                font-size: 0.85rem;
+                padding: 0.5rem 0.5rem;
+                gap: 0.3rem;
+            }
+            .navbar-top nav a::after {
+                display: none;
+            }
+            .user-profile {
+                width: 100%;
+                justify-content: center;
+                margin-top: 1.5rem;
+            }
+            .main-title {
+                font-size: 2.2rem;
+            }
+            .summary-grid {
+                grid-template-columns: 1fr; /* Stack on smaller screens */
+            }
+            .abc-columns {
+                grid-template-columns: 1fr; /* Stack ABC columns */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar-top {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 1rem;
+            }
+            .navbar-top .logo {
+                font-size: 1.8rem;
+            }
+            .navbar-top nav {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.4rem;
+            }
+            .navbar-top nav a {
+                width: 100%;
+                justify-content: flex-start;
+                padding: 0.6rem 0.8rem;
+            }
+            .user-profile {
+                margin-top: 1rem;
+                justify-content: center;
+            }
+            .main-content {
+                padding: 1rem;
+                gap: 1.5rem;
+            }
+            .main-title {
+                font-size: 1.8rem;
+            }
+            .card {
+                padding: 1.2rem 1.5rem;
+                border-radius: 1.2rem;
+            }
+            .card h2 {
+                font-size: 1.2rem;
+                padding-bottom: 0.8rem;
+                margin-bottom: 1.2rem;
+            }
+            .card h2::after {
+                width: 40px;
+                height: 3px;
+            }
+            th, td {
+                padding: 1rem 1rem;
+                font-size: 0.85rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .navbar-top .logo {
+                font-size: 1.6rem;
+            }
+            .user-button {
+                padding: 0.4rem 1rem;
+                gap: 0.6rem;
+            }
+            .user-avatar {
+                width: 38px;
+                height: 38px;
+                font-size: 1.2rem;
+            }
+            .dropdown-menu {
+                width: 250px;
+                right: 5%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar-top">
+        <div class="logo">SAGE</div>
+        <nav>
+            <a href="Dashboard.html" class="active">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </a>
+            <a href="solicitar-itens.html">
+                <i class="fas fa-file-invoice"></i> Solicitar Itens
+            </a>
+            <a href="Receita.html">
+                <i class="fas fa-utensils"></i> Cardápio
+            </a>
+            <a href="minhas-solicitacoes.html">
+                <i class="fas fa-clipboard-list"></i> Minhas Solicitações
+            </a>
+            </nav>
+        <div class="user-profile" id="user-profile-placeholder">
+            </div>
+    </header>
+
+    <main class="main-content">
+        <h1 class="main-title">Dashboard de Estoque</h1>
+
+        <section class="summary-grid">
+            <div class="stat-card">
+                <div class="icon total-items">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <div class="info">
+                    <p>Itens em Estoque</p>
+                    <span id="total-items">...</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="icon total-value">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="info">
+                    <p>Valor Total do Estoque</p>
+                    <span id="total-value">...</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Prioridade de Compra (Classificação ABC)</h2>
+            <div class="abc-columns">
+                <div id="category-a" class="abc-category">
+                    <h3>Categoria A (Crítico) <span class="item-count"></span></h3>
+                    <ul id="list-a" class="item-list"></ul>
+                </div>
+                <div id="category-b" class="abc-category">
+                    <h3>Categoria B (Importante) <span class="item-count"></span></h3>
+                    <ul id="list-b" class="item-list"></ul>
+                </div>
+                <div id="category-c" class="abc-category">
+                    <h3>Categoria C (Normal) <span class="item-count"></span></h3>
+                    <ul id="list-c" class="item-list"></ul>
+                </div>
+            </div>
+        </section>
+        
+        <section id="inventory-details" class="card">
+            <h2>Detalhes do Inventário Completo</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Quantidade</th>
+                            <th>Custo Unit.</th>
+                            <th>Valor Total</th>
+                            <th>Classificação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventory-table-body">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+    
+    <script>
+        // Função para formatar números como moeda brasileira
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+        }
+
+        async function initializeDashboard() {
+            const tableBody = document.getElementById('inventory-table-body');
+            const apiUrl = 'http://localhost:5141/api/Estoque/insumos'; // VERIFIQUE/AJUSTE ESTA URL
+            
+            if (!tableBody) {
+                console.error("Elemento 'inventory-table-body' não encontrado.");
+                return;
+            }
+            
+            tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Carregando dados...</td></tr>';
+
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error(`Erro na API: ${response.statusText}`);
+                }
+                const insumos = await response.json();
+                
+                if (insumos.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Nenhum insumo encontrado.</td></tr>';
+                    document.getElementById('total-items').textContent = 0;
+                    document.getElementById('total-value').textContent = formatCurrency(0);
+                    return;
+                }
+                
+                processAndDisplayData(insumos);
+
+            } catch (error) {
+                console.error('Falha ao buscar insumos:', error);
+                tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: var(--status-danger);">Erro: ${error.message}</td></tr>`;
+            }
+        }
+        
+        function processAndDisplayData(insumos) {
+            let valorTotalGeral = 0;
+            const insumosComValor = insumos.map(insumo => {
+                const valorTotalItem = insumo.quantidadeEstoque * insumo.custoUnitario;
+                valorTotalGeral += valorTotalItem;
+                return { ...insumo, valorTotalItem };
+            });
+
+            insumosComValor.sort((a, b) => b.valorTotalItem - a.valorTotalItem);
+
+            let acumulado = 0;
+            const insumosClassificados = insumosComValor.map(insumo => {
+                acumulado += insumo.valorTotalItem;
+                const percentualAcumulado = valorTotalGeral > 0 ? (acumulado / valorTotalGeral) * 100 : 0;
+                let classificacao;
+                if (percentualAcumulado <= 80) {
+                    classificacao = 'A';
+                } else if (percentualAcumulado <= 95) {
+                    classificacao = 'B';
+                } else {
+                    classificacao = 'C';
+                }
+                return { ...insumo, classificacao, percentualAcumulado };
+            });
+
+            updateUI(insumosClassificados, valorTotalGeral);
+        }
+
+        function updateUI(insumosClassificados, valorTotalGeral) {
+            const listA = document.getElementById('list-a');
+            const listB = document.getElementById('list-b');
+            const listC = document.getElementById('list-c');
+            const tableBody = document.getElementById('inventory-table-body');
+            listA.innerHTML = '';
+            listB.innerHTML = '';
+            listC.innerHTML = '';
+            tableBody.innerHTML = '';
+            
+            let countA = 0, countB = 0, countC = 0;
+            const maxValorA = insumosClassificados.find(i => i.classificacao === 'A')?.valorTotalItem || 1; // Used for progress bar
+
+            insumosClassificados.forEach(insumo => {
+                const row = `
+                    <tr>
+                        <td>${insumo.nome}</td>
+                        <td>${insumo.quantidadeEstoque} ${insumo.unidadeMedida}</td>
+                        <td>${formatCurrency(insumo.custoUnitario)}</td>
+                        <td>${formatCurrency(insumo.valorTotalItem)}</td>
+                        <td><span class="classification-badge" style="background-color: var(--abc-${insumo.classificacao.toLowerCase()}-color); border-color: var(--abc-${insumo.classificacao.toLowerCase()}-color);">${insumo.classificacao}</span></td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+
+                const progressWidth = (insumo.valorTotalItem / maxValorA) * 100;
+                const listItem = `
+                    <li>
+                        <div class="item-info">
+                            <span>${insumo.nome}</span> 
+                            <span>${formatCurrency(insumo.valorTotalItem)}</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-bar-fill" style="width: ${progressWidth > 100 ? 100 : progressWidth}%;"></div>
+                        </div>
+                    </li>`;
+
+                if (insumo.classificacao === 'A') {
+                    listA.innerHTML += listItem;
+                    countA++;
+                } else if (insumo.classificacao === 'B') {
+                    listB.innerHTML += listItem;
+                    countB++;
+                } else {
+                    listC.innerHTML += listItem;
+                    countC++;
+                }
+            });
+
+            document.querySelector('#category-a .item-count').textContent = `(${countA} itens)`;
+            document.querySelector('#category-b .item-count').textContent = `(${countB} itens)`;
+            document.querySelector('#category-c .item-count').textContent = `(${countC} itens)`;
+
+            document.getElementById('total-items').textContent = insumosClassificados.length;
+            document.getElementById('total-value').textContent = formatCurrency(valorTotalGeral);
+        }
+
+        // --- Funções de Perfil de Usuário (PADRÃO) ---
+        function loadUserProfile() {
+            const userString = sessionStorage.getItem('loggedInUser');
+            if (!userString) {
+                console.error('Nenhum usuário logado. Redirecionando para login.');
+                window.location.href = '../login.html'; // Garante que apenas usuários logados acessem
+                return;
+            }
+            const user = JSON.parse(userString);
+            
+            const userProfilePlaceholder = document.getElementById('user-profile-placeholder');
+            if (userProfilePlaceholder) {
+                userProfilePlaceholder.innerHTML = `
+                    <button class="user-button" id="user-menu-button">
+                        <div class="user-avatar">${user.username ? user.username.charAt(0).toUpperCase() : '?'}</div>
+                        <span id="user-display-name">${user.username || 'Usuário'}</span>
+                    </button>
+                    <div class="dropdown-menu" id="user-dropdown">
+                        <div>
+                            <div id="dropdown-username">${user.username || 'Carregando...'}</div>
+                            <div id="dropdown-email">${user.email || ''}</div>
+                        </div>
+                        <a href="#"><i class="fas fa-key"></i> Alterar Senha</a>
+                        <a href="#"><i class="fas fa-image"></i> Alterar Foto de Perfil</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" id="logout-button"><i class="fas fa-sign-out-alt"></i> Sair</a>
+                    </div>
+                `;
+                setupUserMenu();
+            }
+        }
+
+        // --- Função para controlar o menu dropdown do usuário (PADRÃO) ---
+        function setupUserMenu() {
+            const userMenuButton = document.getElementById('user-menu-button');
+            const userDropdown = document.getElementById('user-dropdown');
+            const logoutButton = document.getElementById('logout-button');
+            
+            if (userMenuButton && userDropdown) {
+                userMenuButton.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    userDropdown.classList.toggle('show');
+                });
+                
+                window.addEventListener('click', (event) => {
+                    if (userDropdown.classList.contains('show') && !userDropdown.contains(event.target) && !userMenuButton.contains(event.target)) {
+                        userDropdown.classList.remove('show');
+                    }
+                });
+            }
+            if(logoutButton) {
+                logoutButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    sessionStorage.removeItem('loggedInUser');
+                    window.location.href = '../login.html';
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeDashboard();
+            loadUserProfile();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard SAGE - Minimalista</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* Variáveis de Cores e Estilos - Minimalista e Elegante */
+        :root {
+            /* Paleta Primária - Neutra e Limpa */
+            --bg-primary: #f8f9fa; /* Fundo principal, quase branco */
+            --surface-card: #ffffff; /* Fundo de cartões, branco puro */
+            --border-light: #e0e6ed; /* Bordas e divisores suaves */
+
+            /* Cores de Texto */
+            --text-dark: #343a40; /* Texto principal escuro */
+            --text-medium: #6c757d; /* Texto secundário, informações */
+            --text-light: #adb5bd; /* Texto muito claro, dicas */
+
+            /* Cores de Marca/Destaque - Suaves */
+            --brand-main: #5a67d8; /* Um azul mais calmo e profissional */
+            --brand-accent: #7f8de9; /* Uma versão mais clara do azul para hover/ativos */
+            --brand-text-on-dark: #e0e7fa; /* Texto em fundos escuros da marca */
+
+            /* Cores de Status/ABC - Dessaturadas */
+            --status-success: #28a745; /* Verde para sucesso */
+            --status-warning: #ffc107; /* Amarelo/Laranja para aviso */
+            --status-danger: #dc3545; /* Vermelho para perigo/estoque baixo */
+
+            /* Cores ABC para o gráfico */
+            --abc-a-color: #4CAF50;   /* Verde mais suave */
+            --abc-b-color: #FFC107;   /* Laranja suave */
+            --abc-c-color: #e6525a;   /* Vermelho terroso/suave */
+
+            /* Sombras - Muito sutis */
+            --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-color: var(--bg-primary);
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* --- Navbar Superior --- */
+        .navbar-top {
+            background-color: var(--surface-card); /* Fundo branco para o navbar */
+            border-bottom: 1px solid var(--border-light);
+            padding: 1.2rem 3rem; /* Mais padding */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-sm); /* Sombra bem leve */
+            z-index: 1000;
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .navbar-top .logo {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            color: var(--brand-main); /* Cor da marca */
+        }
+
+        .navbar-top nav {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .navbar-top nav a {
+            color: var(--text-medium); /* Cor de texto padrão */
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 0.6rem 0.4rem;
+            position: relative;
+            transition: color 0.3s ease, background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            border-radius: 8px;
+        }
+
+        .navbar-top nav a:hover {
+            color: var(--brand-main); /* Cor da marca no hover */
+            background-color: var(--bg-primary); /* Fundo leve no hover */
+        }
+
+        .navbar-top nav a.active {
+            color: var(--brand-main);
+            font-weight: 700;
+            background-color: var(--bg-primary); /* Fundo ativo */
+        }
+
+        .navbar-top nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -12px; /* Move para baixo */
+            left: 50%;
+            width: calc(100% - 1rem); /* Linha mais curta */
+            height: 2px; /* Linha mais fina */
+            background-color: var(--brand-main);
+            border-radius: 1px;
+            transform: translateX(-50%) scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        .navbar-top nav a.active::after,
+        .navbar-top nav a:hover::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+        .navbar-top nav a i {
+            font-size: 1.1rem;
+            color: var(--text-light); /* Ícones mais discretos */
+            transition: color 0.3s ease;
+        }
+        .navbar-top nav a:hover i,
+        .navbar-top nav a.active i {
+            color: var(--brand-main); /* Cor da marca para ícones ativos/hover */
+        }
+
+        /* --- Perfil de Usuário no Header --- */
+        .user-profile {
+            position: relative;
+        }
+
+        .user-button {
+            background: var(--bg-primary); /* Fundo claro */
+            border: 1px solid var(--border-light); /* Borda sutil */
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.5rem 1.1rem;
+            border-radius: 999px;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: var(--shadow-sm);
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .user-button:hover {
+            background-color: var(--border-light);
+            box-shadow: var(--shadow-md);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--brand-main); /* Cor da marca */
+            color: var(--brand-text-on-dark); /* Texto claro no avatar */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.3rem;
+            border: 2px solid var(--brand-accent); /* Borda sutil */
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 120%;
+            right: 0;
+            background-color: var(--surface-card);
+            border-radius: 0.8rem; /* Menos arredondado */
+            box-shadow: var(--shadow-md);
+            width: 280px;
+            z-index: 101;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+            opacity: 0;
+            transform: translateY(-10px) scale(0.98);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform-origin: top right;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .dropdown-menu > div {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            background-color: var(--bg-primary);
+        }
+
+        .dropdown-menu > div div:first-child {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 1rem;
+        }
+
+        .dropdown-menu > div div:last-child {
+            font-size: 0.85rem;
+            color: var(--text-medium);
+        }
+
+        .dropdown-menu a {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.9rem 1.5rem;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: var(--bg-primary);
+            color: var(--brand-main);
+        }
+        .dropdown-menu a i {
+            color: var(--text-medium);
+            transition: color 0.2s ease;
+        }
+        .dropdown-menu a:hover i {
+            color: var(--brand-main);
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background-color: var(--border-light);
+            margin: 0.6rem 0;
+        }
+
+        /* --- Conteúdo Principal --- */
+        .main-content {
+            flex-grow: 1;
+            padding: 2.5rem 3rem;
+            overflow-y: auto;
+            background-color: var(--bg-primary);
+            display: flex;
+            flex-direction: column;
+            gap: 2rem; /* Espaçamento entre as seções */
+        }
+
+        .main-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0;
+            text-align: center;
+        }
+
+        /* --- Cards --- */
+        .card {
+            background-color: var(--surface-card);
+            padding: 2rem 2.5rem;
+            border-radius: 0.8rem; /* Menos arredondado */
+            box-shadow: var(--shadow-sm); /* Sombra mais sutil */
+            border: 1px solid var(--border-light);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px); /* Movimento mais suave */
+            box-shadow: var(--shadow-md);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .card h2::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 60px; /* Linha de destaque menor */
+            height: 3px; /* Mais fina */
+            background-color: var(--brand-main); /* Cor da marca */
+            border-radius: 1px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* --- Resumo do Estoque como "Nav" Minimalista --- */
+        .stock-summary-nav {
+            display: grid; /* Usando grid para mais controle de layout */
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* 200px de mínimo */
+            gap: 1.5rem; /* Espaçamento entre itens */
+            background-color: var(--surface-card); /* Fundo branco */
+            padding: 1.8rem 2.5rem;
+            border-radius: 0.8rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .summary-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 0.6rem;
+            font-weight: 500;
+            border-right: 1px solid var(--border-light); /* Divisor vertical */
+            padding-right: 1.5rem; /* Padding para o divisor */
+            padding-left: 1.5rem; /* Padding para o divisor */
+        }
+        .summary-item:last-child {
+            border-right: none; /* Remove a borda do último item */
+            padding-right: 0;
+        }
+        .summary-item:first-child {
+            padding-left: 0;
+        }
+        /* No mobile, remove a borda direita e adiciona inferior */
+        @media (max-width: 992px) {
+            .summary-item {
+                border-right: none;
+                border-bottom: 1px solid var(--border-light);
+                padding-right: 0;
+                padding-bottom: 1.2rem;
+                margin-bottom: 1.2rem;
+            }
+            .summary-item:last-child {
+                border-bottom: none;
+                margin-bottom: 0;
+            }
+        }
+
+
+        .summary-item strong {
+            font-size: 0.95rem;
+            color: var(--text-medium);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .summary-item .value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-top: 0.2rem;
+            transition: color 0.3s ease;
+        }
+
+        .summary-item.total-itens .value { color: var(--text-dark); }
+        .summary-item.valor-total .value { color: var(--status-success); }
+        .summary-item.estoque-baixo .value { color: var(--status-danger); }
+        .summary-item.solicitacoes .value { color: var(--status-warning); } /* Laranja suave */
+
+        .notification-badge {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notification-badge .badge {
+            position: absolute;
+            top: -8px; /* Ajuste para cima */
+            right: -8px; /* Ajuste para a direita */
+            background-color: var(--status-danger); /* Vermelho para a bolinha */
+            color: white;
+            border-radius: 50%;
+            padding: 0.1em 0.4em;
+            font-size: 0.7rem;
+            font-weight: 700;
+            border: 2px solid var(--surface-card); /* Borda branca */
+            min-width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            animation: pulse 1.5s infinite ease-in-out; /* Animação de pulso */
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.9); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(0.9); opacity: 0.8; }
+        }
+        
+        /* --- Tabela --- */
+        .table-card {
+            background-color: var(--surface-card);
+            border-radius: 0.8rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            padding: 2rem 2.5rem;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 0.6rem; /* Menos arredondado para tabela */
+            border: 1px solid var(--border-light);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            text-align: left;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 1.2rem 1.5rem;
+            transition: background-color 0.2s ease;
+            white-space: nowrap; /* Evita quebra de linha em colunas pequenas */
+        }
+
+        thead {
+            background-color: var(--bg-primary);
+        }
+
+        th {
+            font-weight: 600;
+            color: var(--text-medium);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        tbody tr {
+            border-bottom: 1px solid var(--border-light);
+        }
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: rgba(0,0,0,0.01); /* Zebrada quase invisível */
+        }
+        
+        tbody tr:hover {
+            background-color: var(--bg-primary); /* Fundo claro no hover */
+            cursor: pointer;
+        }
+        
+        /* Responsividade */
+        @media (max-width: 1200px) {
+            .navbar-top, .main-content {
+                padding: 1.5rem 2rem;
+            }
+            .navbar-top nav {
+                gap: 1.5rem;
+            }
+            .card {
+                padding: 1.5rem 2rem;
+            }
+            .card h2 {
+                font-size: 1.4rem;
+            }
+            .stock-summary-nav {
+                padding: 1.5rem 2rem;
+            }
+            th, td {
+                padding: 1rem 1.2rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .navbar-top {
+                flex-wrap: wrap; /* Permite quebrar linha */
+                justify-content: center;
+                gap: 1rem;
+            }
+            .navbar-top .logo {
+                width: 100%;
+                text-align: center;
+                margin-bottom: 1rem;
+            }
+            .navbar-top nav {
+                width: 100%;
+                justify-content: space-around;
+                flex-wrap: wrap;
+                margin-top: 1rem;
+            }
+            .navbar-top nav a {
+                flex-direction: column;
+                font-size: 0.85rem;
+                padding: 0.5rem 0.5rem;
+                gap: 0.3rem;
+            }
+            .navbar-top nav a::after {
+                display: none; /* Esconde a linha em mobile para menu empilhado */
+            }
+            .user-profile {
+                width: 100%;
+                justify-content: center;
+                margin-top: 1.5rem;
+            }
+            .main-title {
+                font-size: 2.2rem;
+            }
+            .chart-container {
+                height: 350px;
+            }
+            .summary-item .value {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar-top {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 1rem;
+            }
+            .navbar-top .logo {
+                font-size: 1.8rem;
+            }
+            .navbar-top nav {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.4rem;
+            }
+            .navbar-top nav a {
+                width: 100%;
+                justify-content: flex-start;
+                padding: 0.6rem 0.8rem;
+            }
+            .user-profile {
+                margin-top: 1rem;
+                justify-content: center;
+            }
+            .main-content {
+                padding: 1rem;
+                gap: 1.5rem;
+            }
+            .main-title {
+                font-size: 1.8rem;
+            }
+            .card {
+                padding: 1.2rem 1.5rem;
+            }
+            .card h2 {
+                font-size: 1.2rem;
+                padding-bottom: 0.8rem;
+                margin-bottom: 1.2rem;
+            }
+            .card h2::after {
+                width: 40px;
+                height: 3px;
+            }
+            .chart-container {
+                height: 280px;
+            }
+            .stock-summary-nav {
+                grid-template-columns: 1fr; /* Uma coluna em telas muito pequenas */
+                padding: 1.2rem 1.5rem;
+                gap: 1rem;
+            }
+            .summary-item {
+                padding-left: 0;
+            }
+            .summary-item:first-child {
+                padding-left: 0;
+            }
+            .notification-badge .badge {
+                font-size: 0.65rem;
+                min-width: 20px;
+                height: 20px;
+                top: -6px;
+                right: -6px;
+                border-width: 1px;
+            }
+        }
+    </style>
+</head>
+<body class="font-sans">
+    <header class="navbar-top">
+        <div class="logo">SAGE</div>
+        <nav>
+            <a href="#" class="active">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </a>
+            <a href="solicitacoes-acesso.html">
+                <i class="fas fa-user-plus"></i> Acessos
+            </a>
+            <a href="solicitacoes-insumos.html">
+                <i class="fas fa-clipboard-check"></i> Compras
+            </a>
+            <a href="register.html">
+                <i class="fas fa-user-friends"></i> Usuário
+            </a>
+            <a href="gerenciar-usuarios.html">
+                <i class="fas fa-users-cog"></i> Gerenciar
+            </a>
+        </nav>
+        <div class="user-profile">
+            <button class="user-button" id="user-menu-button">
+                <div class="user-avatar" id="user-avatar">?</div>
+                <span id="user-display-name">Usuário</span>
+            </button>
+            <div class="dropdown-menu" id="user-dropdown">
+                <div>
+                    <div id="dropdown-username">Carregando...</div>
+                    <div id="dropdown-email"></div>
+                </div>
+                <a href="redefinir-senha.html"><i class="fas fa-key"></i> Alterar Senha</a>
+                <a href="#"><i class="fas fa-image"></i> Alterar Foto de Perfil</a>
+                <div class="dropdown-divider"></div>
+                <a href="#" id="logout-button"><i class="fas fa-sign-out-alt"></i> Sair</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <h1 class="main-title">Visão Geral do Sistema</h1>
+
+        <div class="card">
+            <h2>Curva ABC de Insumos (Top 9 por Categoria)</h2>
+            <div class="chart-container">
+                <canvas id="abcChart"></canvas>
+            </div>
+        </div>
+
+        <div class="stock-summary-nav">
+            <div class="summary-item total-itens">
+                <strong>Total de Itens</strong>
+                <span class="value" id="total-itens">...</span>
+            </div>
+            <div class="summary-item valor-total">
+                <strong>Valor Total</strong>
+                <span class="value" id="valor-total">...</span>
+            </div>
+            <div class="summary-item estoque-baixo">
+                <strong>Estoque Baixo</strong>
+                <span class="value" id="estoque-baixo">...</span>
+            </div>
+            <div class="summary-item solicitacoes">
+                <div class="notification-badge">
+                    <strong>Solicitações p/ Aprovar</strong>
+                    <span class="value" id="solicitacoes-aprovacao">...</span>
+                    <span class="badge" id="solicitacoes-badge">0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card table-card">
+            <h2>Estoque de Insumos</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome do Insumo</th>
+                            <th>Estoque</th>
+                            <th>Unidade</th>
+                            <th>Custo Unitário</th>
+                        </tr>
+                    </thead>
+                    <tbody id="insumos-table-body">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Função para formatar números como moeda brasileira
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+        }
+
+        // Função para buscar o número de solicitações de compra pendentes
+        async function fetchPendingRequestsCount() {
+            // !!! IMPORTANTE: SUBSTITUA ESTA URL PELA SUA API REAL !!!
+            const apiUrl = 'http://localhost:5141/api/SolicitacoesCompra/PendentesCount'; 
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    console.warn(`Erro ao buscar contagem de solicitações pendentes: ${response.statusText}. Retornando 0.`);
+                    return 0;
+                }
+                const count = await response.json();
+                return count;
+            } catch (error) {
+                console.error('Falha ao buscar contagem de solicitações pendentes:', error);
+                return 0;
+            }
+        }
+
+        // Função para buscar e exibir os insumos na tabela
+        async function fetchAndDisplayInsumos() {
+            const tableBody = document.getElementById('insumos-table-body');
+            const insumosApiUrl = 'http://localhost:5141/api/Estoque/insumos'; 
+            tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 20px;">Carregando dados...</td></tr>';
+            try {
+                const insumosResponse = await fetch(insumosApiUrl);
+                if (!insumosResponse.ok) throw new Error(`Erro na API de insumos: ${insumosResponse.statusText}`);
+                const insumos = await insumosResponse.json();
+                
+                const solicitacoesCount = await fetchPendingRequestsCount();
+
+                tableBody.innerHTML = '';
+                if (insumos.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 20px;">Nenhum insumo encontrado.</td></tr>';
+                }
+                
+                let valorTotalEstoque = 0;
+                let itensEstoqueBaixo = 0;
+
+                // 1. Calcular o valor total de cada insumo
+                const insumosComValorTotal = insumos.map(i => ({
+                    ...i,
+                    valorTotal: i.quantidadeEstoque * i.custoUnitario
+                }));
+
+                // 2. Ordenar todos os insumos pelo valor total (decrescente)
+                insumosComValorTotal.sort((a, b) => b.valorTotal - a.valorTotal);
+
+                // 3. Classificar TODOS os insumos em A, B, C
+                const totalGeralValor = insumosComValorTotal.reduce((sum, i) => sum + i.valorTotal, 0);
+                const categoryA = [];
+                const categoryB = [];
+                const categoryC = [];
+                let cumulativeValue = 0;
+
+                insumosComValorTotal.forEach(insumo => {
+                    cumulativeValue += insumo.valorTotal;
+                    const percentage = (cumulativeValue / totalGeralValor) * 100;
+                    
+                    if (percentage <= 80) { 
+                        categoryA.push(insumo);
+                    } else if (percentage <= 95) {
+                        categoryB.push(insumo);
+                    } else {
+                        categoryC.push(insumo);
+                    }
+                });
+
+                // 4. Selecionar 3 de A, 3 de B e 3 de C para o gráfico
+                const topInsumosForChart = [];
+                const abcCategoriesForChart = [];
+
+                // Adiciona até 3 de A
+                for (let i = 0; i < Math.min(3, categoryA.length); i++) {
+                    topInsumosForChart.push(categoryA[i]);
+                    abcCategoriesForChart.push('A');
+                }
+                // Adiciona até 3 de B
+                for (let i = 0; i < Math.min(3, categoryB.length); i++) {
+                    topInsumosForChart.push(categoryB[i]);
+                    abcCategoriesForChart.push('B');
+                }
+                // Adiciona até 3 de C
+                for (let i = 0; i < Math.min(3, categoryC.length); i++) {
+                    topInsumosForChart.push(categoryC[i]);
+                    abcCategoriesForChart.push('C');
+                }
+
+                // Preencher a tabela completa
+                insumos.forEach(insumo => {
+                    const row = `
+                        <tr>
+                            <td>${insumo.insumoID}</td>
+                            <td>${insumo.nome}</td>
+                            <td>${insumo.quantidadeEstoque}</td>
+                            <td>${insumo.unidadeMedida}</td>
+                            <td>${formatCurrency(insumo.custoUnitario)}</td>
+                        </tr>`;
+                    tableBody.innerHTML += row;
+                    valorTotalEstoque += insumo.quantidadeEstoque * insumo.custoUnitario;
+                    if (insumo.quantidadeEstoque < 15) itensEstoqueBaixo++; 
+                });
+
+                document.getElementById('total-itens').textContent = insumos.length;
+                document.getElementById('valor-total').textContent = formatCurrency(valorTotalEstoque);
+                document.getElementById('estoque-baixo').textContent = itensEstoqueBaixo;
+                
+                document.getElementById('solicitacoes-aprovacao').textContent = solicitacoesCount;
+                document.getElementById('solicitacoes-badge').textContent = solicitacoesCount;
+                document.getElementById('solicitacoes-badge').style.display = solicitacoesCount > 0 ? 'flex' : 'none';
+
+                updateChart(topInsumosForChart, abcCategoriesForChart);
+
+            } catch (error) {
+                console.error('Falha ao carregar dados:', error);
+                tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 20px; color: var(--status-danger);">Erro ao carregar dados: ${error.message}</td></tr>`;
+                document.getElementById('total-itens').textContent = 'N/A';
+                document.getElementById('valor-total').textContent = 'N/A';
+                document.getElementById('estoque-baixo').textContent = 'N/A';
+                document.getElementById('solicitacoes-aprovacao').textContent = 'N/A';
+                document.getElementById('solicitacoes-badge').style.display = 'none';
+            }
+        }
+
+        // Função para criar/atualizar o gráfico com dados da API e cores ABC
+        let abcChartInstance = null;
+        function updateChart(topInsumosForChart, abcCategoriesForChart) {
+            const ctx = document.getElementById('abcChart').getContext('2d');
+            
+            const labels = topInsumosForChart.map(i => i.nome);
+            const data = topInsumosForChart.map(i => i.valorTotal);
+
+            const getChartColors = (category) => {
+                const rootStyle = getComputedStyle(document.documentElement);
+                if (category === 'A') return rootStyle.getPropertyValue('--abc-a-color').trim();
+                if (category === 'B') return rootStyle.getPropertyValue('--abc-b-color').trim();
+                return rootStyle.getPropertyValue('--abc-c-color').trim();
+            };
+
+            const backgroundColors = abcCategoriesForChart.map(cat => getChartColors(cat));
+            const borderColors = abcCategoriesForChart.map(cat => getChartColors(cat));
+
+            if(abcChartInstance) {
+                abcChartInstance.destroy();
+            }
+
+            abcChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Valor Total em Estoque (R$)',
+                        data: data,
+                        backgroundColor: backgroundColors,
+                        borderColor: backgroundColors,
+                        borderWidth: 1,
+                        borderRadius: 8,
+                        hoverBackgroundColor: backgroundColors.map(color => color + 'b3'), // 70% opacidade no hover
+                        hoverBorderColor: backgroundColors.map(color => color + 'e6'), // 90% opacidade no hover
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { 
+                        y: { 
+                            beginAtZero: true,
+                            grid: { 
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--border-light').trim(),
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-medium').trim(),
+                                callback: function(value) {
+                                    return formatCurrency(value);
+                                }
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-dark').trim(),
+                                font: {
+                                    weight: '600'
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false,
+                        },
+                        tooltip: {
+                            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--text-dark').trim(),
+                            titleColor: getComputedStyle(document.documentElement).getPropertyValue('--brand-accent').trim(),
+                            bodyColor: getComputedStyle(document.documentElement).getPropertyValue('--surface-card').trim(),
+                            padding: 12,
+                            cornerRadius: 6,
+                            displayColors: true,
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += formatCurrency(context.raw);
+                                    const index = context.dataIndex;
+                                    const category = abcCategoriesForChart[index];
+                                    return `${label} (Cat. ${category})`;
+                                }
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 800,
+                        easing: 'easeInOutQuad'
+                    }
+                }
+            });
+        }
+        
+        // Função para controlar o menu dropdown do usuário
+        function setupUserMenu() {
+            const userMenuButton = document.getElementById('user-menu-button');
+            const userDropdown = document.getElementById('user-dropdown');
+            const logoutButton = document.getElementById('logout-button');
+
+            userMenuButton.addEventListener('click', (event) => {
+                event.stopPropagation();
+                userDropdown.classList.toggle('show');
+            });
+            window.addEventListener('click', (event) => {
+                if (userDropdown.classList.contains('show') && !userDropdown.contains(event.target) && !userMenuButton.contains(event.target)) {
+                    userDropdown.classList.remove('show');
+                }
+            });
+            if(logoutButton) {
+                logoutButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    sessionStorage.removeItem('loggedInUser');
+                    window.location.href = '../login.html';
+                });
+            }
+        }
+        
+        // Função para carregar dados do perfil do usuário da sessão
+        function loadUserProfile() {
+            const userString = sessionStorage.getItem('loggedInUser');
+            
+            if (!userString) {
+                console.error('Nenhum usuário logado encontrado. Redirecionando para login.');
+                // window.location.href = '../login.html'; // Descomente para forçar o login
+                return;
+            }
+            
+            const user = JSON.parse(userString);
+            
+            const avatar = document.getElementById('user-avatar');
+            const displayName = document.getElementById('user-display-name');
+            const dropdownUsername = document.getElementById('dropdown-username');
+            const dropdownEmail = document.getElementById('dropdown-email');
+            
+            if (user.username) {
+                if (avatar) avatar.textContent = user.username.charAt(0).toUpperCase();
+                if (displayName) displayName.textContent = user.username;
+                if (dropdownUsername) dropdownUsername.textContent = user.username;
+            }
+            if (user.email) {
+                if (dropdownEmail) dropdownEmail.textContent = user.email;
+            }
+        }
+        
+        // Executa todas as funções de inicialização quando a página carrega
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserProfile();
+            fetchAndDisplayInsumos();
+            setupUserMenu();
+        });
+    </script>
+</body>
+</html>

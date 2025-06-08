@@ -1,0 +1,17 @@
+# Arquivos de dependência e build do .NET
+[Bb]in/
+[Oo]bj/
+
+# Arquivos gerados pelo Visual Studio
+.vs/
+*.suo
+*.user
+*.sln.docstates
+
+# Arquivos de configuração local que não devem ir para o repositório
+appsettings.Development.json
+secrets.json
+
+# Logs e outros arquivos temporários
+*.log
+*.tmp

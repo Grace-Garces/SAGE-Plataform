@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitar Itens - SAGE</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* Variáveis de Cores e Estilos - Minimalista e Elegante */
+        :root {
+            /* Paleta Primária - Neutra e Limpa */
+            --bg-primary: #f8f9fa; /* Fundo principal, quase branco */
+            --surface-card: #ffffff; /* Fundo de cartões, branco puro */
+            --border-light: #e0e6ed; /* Bordas e divisores suaves */
+
+            /* Cores de Texto */
+            --text-dark: #343a40; /* Texto principal escuro */
+            --text-medium: #6c757d; /* Texto secundário, informações */
+            --text-light: #adb5bd; /* Texto muito claro, dicas */
+
+            /* Cores de Marca/Destaque - Suaves */
+            --brand-main: #5a67d8; /* Um azul mais calmo e profissional */
+            --brand-accent: #7f8de9; /* Uma versão mais clara do azul para hover/ativos */
+            --brand-text-on-dark: #e0e7fa; /* Texto em fundos escuros da marca */
+
+            /* Cores de Status/ABC - Dessaturadas */
+            --status-success: #28a745; /* Verde para sucesso */
+            --status-warning: #ffc107; /* Amarelo/Laranja para aviso */
+            --status-danger: #dc3545; /* Vermelho para perigo/estoque baixo */
+
+            /* Cores ABC para o gráfico (mantidas para consistência de paleta) */
+            --abc-a-color: #4CAF50;
+            --abc-b-color: #FFC107;
+            --abc-c-color: #e6525a;
+
+            /* Sombras - Muito sutis */
+            --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-color: var(--bg-primary);
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* --- Navbar Superior (PADRÃO) --- */
+        .navbar-top {
+            background-color: var(--surface-card);
+            border-bottom: 1px solid var(--border-light);
+            padding: 1.2rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-sm);
+            z-index: 1000;
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .navbar-top .logo {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            color: var(--brand-main);
+        }
+
+        .navbar-top nav {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .navbar-top nav a {
+            color: var(--text-medium);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 0.6rem 0.4rem;
+            position: relative;
+            transition: color 0.3s ease, background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            border-radius: 8px;
+        }
+
+        .navbar-top nav a:hover {
+            color: var(--brand-main);
+            background-color: var(--bg-primary);
+        }
+
+        .navbar-top nav a.active {
+            color: var(--brand-main);
+            font-weight: 700;
+            background-color: var(--bg-primary);
+        }
+
+        .navbar-top nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            width: calc(100% - 1rem);
+            height: 2px;
+            background-color: var(--brand-main);
+            border-radius: 1px;
+            transform: translateX(-50%) scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        .navbar-top nav a.active::after,
+        .navbar-top nav a:hover::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+        .navbar-top nav a i {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            transition: color 0.3s ease;
+        }
+        .navbar-top nav a:hover i,
+        .navbar-top nav a.active i {
+            color: var(--brand-main);
+        }
+
+        /* --- Perfil de Usuário no Header (PADRÃO) --- */
+        .user-profile {
+            position: relative;
+        }
+
+        .user-button {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.5rem 1.1rem;
+            border-radius: 999px;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: var(--shadow-sm);
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .user-button:hover {
+            background-color: var(--border-light);
+            box-shadow: var(--shadow-md);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--brand-main);
+            color: var(--brand-text-on-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.3rem;
+            border: 2px solid var(--brand-accent);
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 120%;
+            right: 0;
+            background-color: var(--surface-card);
+            border-radius: 0.8rem;
+            box-shadow: var(--shadow-md);
+            width: 280px;
+            z-index: 101;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+            opacity: 0;
+            transform: translateY(-10px) scale(0.98);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform-origin: top right;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .dropdown-menu > div {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            background-color: var(--bg-primary);
+        }
+
+        .dropdown-menu > div div:first-child {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 1rem;
+        }
+
+        .dropdown-menu > div div:last-child {
+            font-size: 0.85rem;
+            color: var(--text-medium);
+        }
+
+        .dropdown-menu a {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.9rem 1.5rem;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: var(--bg-primary);
+            color: var(--brand-main);
+        }
+        .dropdown-menu a i {
+            color: var(--text-medium);
+            transition: color 0.2s ease;
+        }
+        .dropdown-menu a:hover i {
+            color: var(--brand-main);
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background-color: var(--border-light);
+            margin: 0.6rem 0;
+        }
+
+        /* --- Conteúdo Principal (PADRÃO) --- */
+        .main-content {
+            flex-grow: 1;
+            padding: 2.5rem 3rem;
+            overflow-y: auto;
+            background-color: var(--bg-primary);
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .main-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0;
+            text-align: center;
+        }
+        
+        /* --- Form Styles (PADRÃO) --- */
+        .card {
+            background-color: var(--surface-card);
+            padding: 2.5rem; /* Ajustado padding do card */
+            border-radius: 0.8rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 0.85rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-light);
+            border-radius: 0.5rem;
+            box-sizing: border-box;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif; /* Consistência da fonte */
+            background-color: var(--bg-primary); /* Fundo input */
+            transition: box-shadow 0.2s, border-color 0.2s, background-color 0.2s;
+            color: var(--text-dark);
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--brand-main);
+            box-shadow: 0 0 0 3px rgba(90, 103, 216, 0.2);
+            outline: none;
+            background-color: var(--surface-card); /* Fundo input no foco */
+        }
+        input[readonly], textarea[readonly] {
+            background-color: var(--bg-primary); /* Fundo para readonly */
+            cursor: not-allowed;
+            color: var(--text-medium); /* Cor de texto para readonly */
+        }
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem 2rem;
+        }
+        .form-full-width {
+            grid-column: 1 / -1;
+        }
+        .form-footer {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 1rem;
+        }
+        .form-footer button {
+            background-color: var(--brand-main);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif; /* Consistência da fonte */
+            transition: background-color 0.2s;
+        }
+        .form-footer button:hover {
+            background-color: var(--brand-accent);
+        }
+        .form-footer button:disabled {
+            background-color: #aeb5ed; /* Cor desabilitada mais suave */
+            cursor: not-allowed;
+        }
+        
+        #responseArea { 
+            flex-grow: 1;
+            text-align: left;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0.5rem;
+            display: none; 
+            font-weight: 600;
+        }
+        .success { color: var(--status-success); background-color: #d4edda; border: 1px solid #c3e6cb; }
+        .error { color: var(--status-danger); background-color: #f8d7da; border: 1px solid #f5c6cb; }
+
+        /* User Profile (PADRÃO) */
+        .user-profile { position: relative; }
+        .user-button { 
+            background: var(--bg-primary); border: 1px solid var(--border-light); cursor: pointer; 
+            display: flex; align-items: center; gap: 0.7rem; padding: 0.5rem 1.1rem; 
+            border-radius: 999px; transition: background-color 0.2s ease, box-shadow 0.2s ease; 
+            box-shadow: var(--shadow-sm); color: var(--text-dark); font-weight: 500; 
+        }
+        .user-button:hover { background-color: var(--border-light); box-shadow: var(--shadow-md); }
+        .user-avatar { 
+            width: 40px; height: 40px; border-radius: 50%; background-color: var(--brand-main); 
+            color: var(--brand-text-on-dark); display: flex; align-items: center; justify-content: center; 
+            font-weight: 700; font-size: 1.3rem; border: 2px solid var(--brand-accent); 
+        }
+        .dropdown-menu { 
+            display: none; position: absolute; top: 120%; right: 0; background-color: var(--surface-card); 
+            border-radius: 0.8rem; box-shadow: var(--shadow-md); width: 280px; z-index: 101; overflow: hidden; 
+            border: 1px solid var(--border-light); opacity: 0; transform: translateY(-10px) scale(0.98); 
+            transition: opacity 0.3s ease, transform 0.3s ease; transform-origin: top right; 
+        }
+        .dropdown-menu.show { display: block; opacity: 1; transform: translateY(0) scale(1); }
+        .dropdown-menu > div { padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-light); background-color: var(--bg-primary); }
+        .dropdown-menu > div div:first-child { font-weight: 600; color: var(--text-dark); font-size: 1rem; }
+        .dropdown-menu > div div:last-child { font-size: 0.85rem; color: var(--text-medium); }
+        .dropdown-menu a { 
+            display: flex; align-items: center; gap: 0.7rem; padding: 0.9rem 1.5rem; 
+            color: var(--text-dark); text-decoration: none; font-size: 0.95rem; 
+            transition: background-color 0.2s ease, color 0.2s ease; 
+        }
+        .dropdown-menu a:hover { background-color: var(--bg-primary); color: var(--brand-main); }
+        .dropdown-menu a i { color: var(--text-medium); transition: color 0.2s ease; }
+        .dropdown-menu a:hover i { color: var(--brand-main); }
+        .dropdown-divider { height: 1px; background-color: var(--border-light); margin: 0.6rem 0; }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .navbar-top, .main-content {
+                padding: 1.5rem 2rem;
+            }
+            .navbar-top nav {
+                gap: 1.5rem;
+            }
+            .card {
+                padding: 1.5rem 2rem;
+            }
+            label {
+                font-size: 0.95rem;
+            }
+            input, select, textarea {
+                font-size: 0.9rem;
+                padding: 0.75rem;
+            }
+            .form-grid {
+                gap: 1rem 1.5rem;
+            }
+            .form-footer button {
+                padding: 0.7rem 1.2rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .navbar-top {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
+            }
+            .navbar-top .logo {
+                width: 100%;
+                text-align: center;
+                margin-bottom: 1rem;
+            }
+            .navbar-top nav {
+                width: 100%;
+                justify-content: space-around;
+                flex-wrap: wrap;
+                margin-top: 1rem;
+            }
+            .navbar-top nav a {
+                flex-direction: column;
+                font-size: 0.85rem;
+                padding: 0.5rem 0.5rem;
+                gap: 0.3rem;
+            }
+            .navbar-top nav a::after {
+                display: none;
+            }
+            .user-profile {
+                width: 100%;
+                justify-content: center;
+                margin-top: 1.5rem;
+            }
+            .main-title {
+                font-size: 2.2rem;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar-top {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 1rem;
+            }
+            .navbar-top .logo {
+                font-size: 1.8rem;
+            }
+            .navbar-top nav {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.4rem;
+            }
+            .navbar-top nav a {
+                width: 100%;
+                justify-content: flex-start;
+                padding: 0.6rem 0.8rem;
+            }
+            .user-profile {
+                margin-top: 1rem;
+                justify-content: center;
+            }
+            .main-content {
+                padding: 1rem;
+                gap: 1.5rem;
+            }
+            .main-title {
+                font-size: 1.8rem;
+            }
+            .card {
+                padding: 1.2rem 1.5rem;
+                border-radius: 1.2rem;
+            }
+            .form-footer {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.8rem;
+            }
+            .form-footer button {
+                width: 100%;
+            }
+            #responseArea {
+                order: -1;
+                margin-bottom: 0.5rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .navbar-top .logo {
+                font-size: 1.6rem;
+            }
+            .user-button {
+                padding: 0.4rem 1rem;
+                gap: 0.6rem;
+            }
+            .user-avatar {
+                width: 38px;
+                height: 38px;
+                font-size: 1.2rem;
+            }
+            .dropdown-menu {
+                width: 250px;
+                right: 5%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar-top">
+        <div class="logo">SAGE</div>
+        <nav>
+            <a href="Dashboard.html">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </a>
+            <a href="solicitar-itens.html" class="active">
+                <i class="fas fa-file-invoice"></i> Solicitar Itens
+            </a>
+            <a href="Receita.html">
+                <i class="fas fa-utensils"></i> Cardápio
+            </a>
+            <a href="minhas-solicitacoes.html">
+                <i class="fas fa-clipboard-list"></i> Minhas Solicitações
+            </a>
+            </nav>
+        <div class="user-profile" id="user-profile-placeholder">
+            </div>
+    </header>
+
+    <main class="main-content">
+        <h1 class="main-title">Solicitação de Itens</h1>
+        <section class="card">
+            <form id="requestForm">
+                <div class="form-grid">
+                    <div class="form-full-width">
+                        <label for="itemTypeSelect">Tipo de Item:</label>
+                        <select id="itemTypeSelect" required>
+                            <option value="" disabled selected>Selecione o tipo...</option>
+                            <option value="Insumo">Insumo</option>
+                            <option value="Utensilio">Utensílio</option>
+                        </select>
+                    </div>
+                    <div class="form-full-width">
+                        <label for="itemSelect">Selecione o Item:</label>
+                        <select id="itemSelect" required disabled>
+                            <option value="" disabled selected>Selecione um tipo primeiro...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="itemId">ID do Item</label>
+                        <input type="text" id="itemId" readonly>
+                    </div>
+                    <div>
+                        <label for="custoUnitario">Custo Unitário (R$)</label>
+                        <input type="text" id="custoUnitario" readonly>
+                    </div>
+                    <div>
+                        <label for="quantidade">Quantidade a Solicitar:</label>
+                        <input type="number" id="quantidade" min="1" value="1" required>
+                    </div>
+                    <div>
+                        <label for="valorTotal">Valor Total Estimado (R$)</label>
+                        <input type="text" id="valorTotal" readonly>
+                    </div>
+                    <div class="form-full-width">
+                        <label for="justificativa">Justificativa:</label>
+                        <textarea id="justificativa" placeholder="Ex: Para a produção de pães da próxima semana ou para uso na cozinha." required></textarea>
+                    </div>
+                </div>
+                <div class="form-footer">
+                    <div id="responseArea"></div>
+                    <button type="submit"><i class="fas fa-paper-plane"></i> Enviar Solicitação</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5141/api'; // VERIFIQUE/AJUSTE ESTA URL
+        let itemsData = { 
+            Insumo: [],
+            Utensilio: []
+        };
+        let currentItemType = '';
+
+        // Função para formatar moeda (mantida para consistência)
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+        }
+
+        async function fetchItems(type) {
+            const itemSelect = document.getElementById('itemSelect');
+            itemSelect.disabled = true;
+            itemSelect.innerHTML = '<option value="" disabled selected>Carregando itens...</option>';
+            resetFormFields();
+
+            currentItemType = type;
+
+            let apiUrl = '';
+            if (type === 'Insumo') {
+                apiUrl = `${API_BASE_URL}/Estoque/insumos`; // VERIFIQUE/AJUSTE ESTA URL
+            } else if (type === 'Utensilio') {
+                apiUrl = `${API_BASE_URL}/Estoque/utensilios`; // VERIFIQUE/AJUSTE ESTA URL
+            } else {
+                return;
+            }
+
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error(`Erro na API.`);
+                
+                const data = await response.json();
+                itemsData[type] = data; 
+                
+                itemSelect.innerHTML = '<option value="" disabled selected>Selecione um item...</option>';
+                data.forEach(item => {
+                    const idField = type === 'Insumo' ? 'insumoID' : 'utensilioID';
+                    const option = new Option(`${item.nome} (${item.unidadeMedida})`, item[idField]);
+                    itemSelect.add(option);
+                });
+                itemSelect.disabled = false;
+            } catch (error) {
+                console.error(`Falha ao carregar ${type}s:`, error);
+                itemSelect.innerHTML = `<option value="" disabled selected>Erro ao carregar</option>`;
+            }
+        }
+
+        function resetFormFields() {
+            document.getElementById('itemId').value = '';
+            document.getElementById('custoUnitario').value = '';
+            document.getElementById('quantidade').value = '1';
+            document.getElementById('valorTotal').value = '';
+            document.getElementById('justificativa').value = '';
+            document.getElementById('responseArea').style.display = 'none';
+        }
+
+        function updateFormFields() {
+            const itemSelect = document.getElementById('itemSelect');
+            const selectedId = itemSelect.value;
+            const selectedItem = itemsData[currentItemType].find(item => {
+                const idField = currentItemType === 'Insumo' ? 'insumoID' : 'utensilioID';
+                return item[idField] == selectedId;
+            });
+            
+            if (selectedItem) {
+                const idField = currentItemType === 'Insumo' ? 'insumoID' : 'utensilioID';
+                document.getElementById('itemId').value = selectedItem[idField];
+                document.getElementById('custoUnitario').value = selectedItem.custoUnitario.toFixed(2);
+                updateTotalValue();
+            }
+        }
+        
+        function updateTotalValue() {
+            const custo = parseFloat(document.getElementById('custoUnitario').value) || 0;
+            const quantidade = parseInt(document.getElementById('quantidade').value) || 0;
+            const valorTotal = custo * quantidade;
+            document.getElementById('valorTotal').value = valorTotal.toFixed(2);
+        }
+
+        document.getElementById('itemTypeSelect').addEventListener('change', function() {
+            fetchItems(this.value);
+        });
+        document.getElementById('itemSelect').addEventListener('change', updateFormFields);
+        document.getElementById('quantidade').addEventListener('input', updateTotalValue);
+
+        document.getElementById('requestForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const responseArea = document.getElementById('responseArea');
+            const submitButton = event.target.querySelector('button');
+            const user = JSON.parse(sessionStorage.getItem('loggedInUser'));
+
+            if (!user) {
+                responseArea.className = 'error';
+                responseArea.textContent = "Sessão expirada. Faça login novamente.";
+                responseArea.style.display = 'block';
+                return;
+            }
+
+            const selectedItemType = document.getElementById('itemTypeSelect').value;
+            const selectedItemId = document.getElementById('itemSelect').value;
+            
+            const selectedItem = itemsData[selectedItemType].find(item => {
+                const idField = selectedItemType === 'Insumo' ? 'insumoID' : 'utensilioID';
+                return item[idField] == selectedItemId;
+            });
+
+            if (!selectedItem) {
+                responseArea.className = 'error';
+                responseArea.textContent = 'Por favor, selecione um item válido.';
+                responseArea.style.display = 'block';
+                return;
+            }
+
+            const payload = {
+                itemID: parseInt(document.getElementById('itemId').value),
+                tipoItem: selectedItemType,
+                nomeItem: selectedItem.nome,
+                quantidadeSolicitada: parseInt(document.getElementById('quantidade').value),
+                valorUnitario: parseFloat(document.getElementById('custoUnitario').value),
+                justificativa: document.getElementById('justificativa').value,
+                solicitante: user.username 
+            };
+            
+            responseArea.style.display = 'none';
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...'; // Spinner no botão
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/Solicitacao/criar`, { // VERIFIQUE/AJUSTE ESTA URL
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const responseData = await response.json();
+
+                if(response.ok) {
+                    responseArea.className = 'success';
+                    responseArea.textContent = responseData.message || 'Solicitação enviada com sucesso!';
+                    document.getElementById('requestForm').reset();
+                    document.getElementById('itemSelect').innerHTML = '<option value="" disabled selected>Selecione um tipo primeiro...</option>';
+                    document.getElementById('itemSelect').disabled = true;
+                    document.getElementById('itemTypeSelect').value = '';
+                    resetFormFields();
+                } else {
+                    responseArea.className = 'error';
+                    responseArea.textContent = `Erro: ${responseData.message || 'Falha ao enviar solicitação.'}`;
+                }
+            } catch(error) {
+                responseArea.className = 'error';
+                responseArea.textContent = 'Erro de conexão com a API.';
+            } finally {
+                responseArea.style.display = 'block';
+                submitButton.disabled = false;
+                submitButton.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Solicitação';
+            }
+        });
+
+        // --- Funções de Perfil de Usuário (PADRÃO) ---
+        function loadUserProfile() {
+            const userString = sessionStorage.getItem('loggedInUser');
+            if (!userString) {
+                window.location.href = '../login.html'; // Garante que apenas usuários logados acessem
+                return;
+            }
+            const user = JSON.parse(userString);
+            
+            const userProfilePlaceholder = document.getElementById('user-profile-placeholder');
+            if (userProfilePlaceholder) {
+                userProfilePlaceholder.innerHTML = `
+                    <button class="user-button" id="user-menu-button">
+                        <div class="user-avatar">${user.username ? user.username.charAt(0).toUpperCase() : '?'}</div>
+                        <span id="user-display-name">${user.username || 'Usuário'}</span>
+                    </button>
+                    <div class="dropdown-menu" id="user-dropdown">
+                        <div>
+                            <div id="dropdown-username">${user.username || 'Carregando...'}</div>
+                            <div id="dropdown-email">${user.email || ''}</div>
+                        </div>
+                        <a href="#"><i class="fas fa-key"></i> Alterar Senha</a>
+                        <a href="#"><i class="fas fa-image"></i> Alterar Foto de Perfil</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" id="logout-button"><i class="fas fa-sign-out-alt"></i> Sair</a>
+                    </div>
+                `;
+                setupUserMenu();
+            }
+        }
+
+        // --- Função para controlar o menu dropdown do usuário (PADRÃO) ---
+        function setupUserMenu() {
+            const userMenuButton = document.getElementById('user-menu-button');
+            const userDropdown = document.getElementById('user-dropdown');
+            const logoutButton = document.getElementById('logout-button');
+            
+            if (userMenuButton && userDropdown) {
+                userMenuButton.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    userDropdown.classList.toggle('show');
+                });
+                
+                window.addEventListener('click', (e) => {
+                    if (userDropdown.classList.contains('show') && !userDropdown.contains(e.target) && !userMenuButton.contains(e.target)) {
+                        userDropdown.classList.remove('show');
+                    }
+                });
+            }
+            if(logoutButton) {
+                logoutButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    sessionStorage.removeItem('loggedInUser');
+                    window.location.href = '../login.html';
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('itemTypeSelect').disabled = false;
+            document.getElementById('itemSelect').disabled = true;
+            document.getElementById('quantidade').value = '1';
+            loadUserProfile();
+        });
+    </script>
+</body>
+</html>

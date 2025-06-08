@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitações de Acesso - SAGE</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* Variáveis de Cores e Estilos - Minimalista e Elegante (Padrão do Dashboard) */
+        :root {
+            /* Paleta Primária - Neutra e Limpa */
+            --bg-primary: #f8f9fa; /* Fundo principal, quase branco */
+            --surface-card: #ffffff; /* Fundo de cartões, branco puro */
+            --border-light: #e0e6ed; /* Bordas e divisores suaves */
+
+            /* Cores de Texto */
+            --text-dark: #343a40; /* Texto principal escuro */
+            --text-medium: #6c757d; /* Texto secundário, informações */
+            --text-light: #adb5bd; /* Texto muito claro, dicas */
+
+            /* Cores de Marca/Destaque - Suaves */
+            --brand-main: #5a67d8; /* Um azul mais calmo e profissional */
+            --brand-accent: #7f8de9; /* Uma versão mais clara do azul para hover/ativos */
+            --brand-text-on-dark: #e0e7fa; /* Texto em fundos escuros da marca */
+
+            /* Cores de Status/ABC - Dessaturadas */
+            --status-success: #28a745; /* Verde para sucesso */
+            --status-warning: #ffc107; /* Amarelo/Laranja para aviso */
+            --status-danger: #dc3545; /* Vermelho para perigo/estoque baixo */
+
+            /* Cores ABC para o gráfico (mantidas para consistência de paleta) */
+            --abc-a-color: #4CAF50;
+            --abc-b-color: #FFC107;
+            --abc-c-color: #e6525a;
+
+            /* Sombras - Muito sutis */
+            --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-color: var(--bg-primary);
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column; /* Necessário para navbar no topo */
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* --- Navbar Superior (Padrão do Dashboard) --- */
+        .navbar-top {
+            background-color: var(--surface-card);
+            border-bottom: 1px solid var(--border-light);
+            padding: 1.2rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-sm);
+            z-index: 1000;
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .navbar-top .logo {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            color: var(--brand-main);
+        }
+
+        .navbar-top nav {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .navbar-top nav a {
+            color: var(--text-medium);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 0.6rem 0.4rem;
+            position: relative;
+            transition: color 0.3s ease, background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            border-radius: 8px;
+        }
+
+        .navbar-top nav a:hover {
+            color: var(--brand-main);
+            background-color: var(--bg-primary);
+        }
+
+        .navbar-top nav a.active {
+            color: var(--brand-main);
+            font-weight: 700;
+            background-color: var(--bg-primary);
+        }
+
+        .navbar-top nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            width: calc(100% - 1rem);
+            height: 2px;
+            background-color: var(--brand-main);
+            border-radius: 1px;
+            transform: translateX(-50%) scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        .navbar-top nav a.active::after,
+        .navbar-top nav a:hover::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+        .navbar-top nav a i {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            transition: color 0.3s ease;
+        }
+        .navbar-top nav a:hover i,
+        .navbar-top nav a.active i {
+            color: var(--brand-main);
+        }
+
+        /* --- Perfil de Usuário no Header (Padrão do Dashboard) --- */
+        .user-profile {
+            position: relative;
+        }
+
+        .user-button {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.5rem 1.1rem;
+            border-radius: 999px;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: var(--shadow-sm);
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .user-button:hover {
+            background-color: var(--border-light);
+            box-shadow: var(--shadow-md);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--brand-main);
+            color: var(--brand-text-on-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.3rem;
+            border: 2px solid var(--brand-accent);
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 120%;
+            right: 0;
+            background-color: var(--surface-card);
+            border-radius: 0.8rem;
+            box-shadow: var(--shadow-md);
+            width: 280px;
+            z-index: 101;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+            opacity: 0;
+            transform: translateY(-10px) scale(0.98);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform-origin: top right;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .dropdown-menu > div {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            background-color: var(--bg-primary);
+        }
+
+        .dropdown-menu > div div:first-child {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 1rem;
+        }
+
+        .dropdown-menu > div div:last-child {
+            font-size: 0.85rem;
+            color: var(--text-medium);
+        }
+
+        .dropdown-menu a {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.9rem 1.5rem;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: var(--bg-primary);
+            color: var(--brand-main);
+        }
+        .dropdown-menu a i {
+            color: var(--text-medium);
+            transition: color 0.2s ease;
+        }
+        .dropdown-menu a:hover i {
+            color: var(--brand-main);
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background-color: var(--border-light);
+            margin: 0.6rem 0;
+        }
+
+        /* --- Conteúdo Principal (Padrão do Dashboard) --- */
+        .main-content {
+            flex-grow: 1;
+            padding: 2.5rem 3rem;
+            overflow-y: auto;
+            background-color: var(--bg-primary);
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .main-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0;
+            text-align: center;
+        }
+
+        /* --- Cards (Padrão do Dashboard) --- */
+        .card {
+            background-color: var(--surface-card);
+            padding: 2rem 2.5rem;
+            border-radius: 0.8rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .card h2 { /* Título dentro do card */
+            margin-top: 0;
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        .card h2::after { /* Linha de destaque para o título do card */
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 60px;
+            height: 3px;
+            background-color: var(--brand-main);
+            border-radius: 1px;
+        }
+        
+        /* --- Tabela (Padrão do Dashboard) --- */
+        .table-card { /* Usando o mesmo estilo de .card para o container da tabela */
+            /* Propriedades já definidas em .card */
+            padding: 2rem 2.5rem; /* Ajuste para ter espaço */
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 0.6rem;
+            border: 1px solid var(--border-light); /* Borda ao redor da tabela */
+            background-color: var(--surface-card); /* Garante fundo branco para a tabela */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            text-align: left;
+            overflow: hidden; /* Importante para o border-radius no container */
+        }
+
+        th, td {
+            padding: 1.2rem 1.5rem;
+            transition: background-color 0.2s ease;
+            white-space: nowrap; /* Evita quebra de linha em colunas pequenas */
+        }
+
+        thead {
+            background-color: var(--bg-primary); /* Fundo sutil para o cabeçalho */
+        }
+
+        th {
+            font-weight: 600;
+            color: var(--text-medium);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            position: sticky; /* Fixa o cabeçalho ao rolar */
+            top: 0;
+            z-index: 10;
+        }
+        
+        tbody tr {
+            border-bottom: 1px solid var(--border-light); /* Linhas finas entre as rows */
+        }
+        tbody tr:last-child {
+            border-bottom: none; /* Remove a borda da última linha */
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: rgba(0,0,0,0.01); /* Efeito zebrada muito sutil */
+        }
+        
+        tbody tr:hover {
+            background-color: var(--bg-primary); /* Fundo claro no hover */
+            cursor: pointer;
+        }
+
+        /* Botões de Ação - Padronizados */
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .action-buttons button, .action-buttons a { /* Adicionado a para links */
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: white;
+            text-decoration: none; /* Para links */
+            text-align: center; /* Para links */
+            transition: all 0.2s ease-in-out;
+            font-size: 0.85rem;
+        }
+        .action-buttons button:hover, .action-buttons a:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+        .action-buttons button:active, .action-buttons a:active {
+            transform: translateY(0);
+        }
+
+        .btn-approve { background-color: var(--status-success); }
+        .btn-reject { background-color: var(--status-danger); }
+        
+        /* Modal de Aprovação de Acesso (ajustes) */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4); /* Fundo escuro mais suave */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background-color: var(--surface-card);
+            padding: 2rem;
+            border-radius: 0.8rem;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+            transform: translateY(-20px) scale(0.95);
+            transition: transform 0.3s ease-in-out;
+        }
+        .modal-overlay.show .modal-content {
+            transform: translateY(0) scale(1);
+        }
+        .modal-content h2 { /* Título do modal */
+            font-size: 1.8rem;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .modal-content label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        .modal-content input, .modal-content select {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-light);
+            border-radius: 0.5rem;
+            box-sizing: border-box;
+            font-size: 1rem;
+            background-color: var(--bg-primary); /* Fundo input */
+            color: var(--text-dark);
+            transition: box-shadow 0.2s, border-color 0.2s, background-color 0.2s;
+        }
+        .modal-content input:focus, .modal-content select:focus {
+            border-color: var(--brand-main);
+            box-shadow: 0 0 0 3px rgba(90, 103, 216, 0.2);
+            outline: none;
+            background-color: var(--surface-card); /* Fundo input no foco */
+        }
+        .modal-content input[readonly] { 
+            background-color: var(--bg-primary); /* Cor de fundo para readonly */
+            cursor: not-allowed;
+            color: var(--text-medium); /* Cor de texto para readonly */
+        }
+        .modal-content select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236c757d' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.75rem center;
+            background-repeat: no-repeat;
+            background-size: 1.25em 1.25em;
+            padding-right: 2.5rem;
+        }
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            margin-top: 2rem;
+        }
+        .modal-buttons button {
+            padding: 0.7rem 1.4rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.2s;
+            color: white; /* Cor do texto dos botões do modal */
+        }
+        .modal-buttons button:hover {
+            transform: translateY(-1px);
+        }
+        .modal-buttons .btn-cancel {
+            background-color: var(--text-medium); /* Cinza para cancelar */
+        }
+        .modal-buttons .btn-cancel:hover {
+            background-color: #5a6268;
+        }
+        .modal-buttons .btn-confirm {
+            background-color: var(--status-success); /* Verde para confirmar */
+        }
+        .modal-buttons .btn-confirm:hover {
+            background-color: #218838;
+        }
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: var(--brand-main); /* Cor do spinner */
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 0.5rem;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .modal-message {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+        .modal-message.success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; } /* Verde suave */
+        .modal-message.error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; } /* Vermelho suave */
+
+
+        /* Responsividade (Padrão do Dashboard) */
+        @media (max-width: 1200px) {
+            .navbar-top, .main-content {
+                padding: 1.5rem 2rem;
+            }
+            .navbar-top nav {
+                gap: 1.5rem;
+            }
+            .card {
+                padding: 1.5rem 2rem;
+            }
+            .card h2 {
+                font-size: 1.4rem;
+            }
+            th, td {
+                padding: 1rem 1.2rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .navbar-top {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
+            }
+            .navbar-top .logo {
+                width: 100%;
+                text-align: center;
+                margin-bottom: 1rem;
+            }
+            .navbar-top nav {
+                width: 100%;
+                justify-content: space-around;
+                flex-wrap: wrap;
+                margin-top: 1rem;
+            }
+            .navbar-top nav a {
+                flex-direction: column;
+                font-size: 0.85rem;
+                padding: 0.5rem 0.5rem;
+                gap: 0.3rem;
+            }
+            .navbar-top nav a::after {
+                display: none;
+            }
+            .user-profile {
+                width: 100%;
+                justify-content: center;
+                margin-top: 1.5rem;
+            }
+            .main-title {
+                font-size: 2.2rem;
+            }
+            .modal-content {
+                max-width: 350px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar-top {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 1rem;
+            }
+            .navbar-top .logo {
+                font-size: 1.8rem;
+            }
+            .navbar-top nav {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.4rem;
+            }
+            .navbar-top nav a {
+                width: 100%;
+                justify-content: flex-start;
+                padding: 0.6rem 0.8rem;
+            }
+            .user-profile {
+                margin-top: 1rem;
+                justify-content: center;
+            }
+            .main-content {
+                padding: 1rem;
+                gap: 1.5rem;
+            }
+            .main-title {
+                font-size: 1.8rem;
+            }
+            .card {
+                padding: 1.2rem 1.5rem;
+                border-radius: 1.2rem;
+            }
+            .card h2 {
+                font-size: 1.2rem;
+                padding-bottom: 0.8rem;
+                margin-bottom: 1.2rem;
+            }
+            .card h2::after {
+                width: 40px;
+                height: 3px;
+            }
+            th, td {
+                padding: 1rem 1rem;
+                font-size: 0.85rem;
+            }
+            .action-buttons button {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.8rem;
+            }
+            .modal-content {
+                padding: 1.5rem;
+            }
+            .modal-content h2 {
+                font-size: 1.5rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .navbar-top .logo {
+                font-size: 1.6rem;
+            }
+            .user-button {
+                padding: 0.4rem 1rem;
+                gap: 0.6rem;
+            }
+            .user-avatar {
+                width: 38px;
+                height: 38px;
+                font-size: 1.2rem;
+            }
+            .dropdown-menu {
+                width: 250px;
+                right: 5%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar-top">
+        <div class="logo">SAGE</div>
+        <nav>
+            <a href="Admin.html">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </a>
+            <a href="solicitacoes-acesso.html" class="active">
+                <i class="fas fa-user-plus"></i> Acessos
+            </a>
+            <a href="solicitacoes-insumos.html">
+                <i class="fas fa-clipboard-check"></i> Compras
+            </a>
+            <a href="register.html">
+                <i class="fas fa-user-friends"></i> Usuário
+            </a>
+            <a href="gerenciar-usuarios.html">
+                <i class="fas fa-users-cog"></i> Gerenciar
+            </a>
+        </nav>
+        <div class="user-profile">
+            <button class="user-button" id="user-menu-button">
+                <div class="user-avatar" id="user-avatar">?</div>
+                <span id="user-display-name">Usuário</span>
+            </button>
+            <div class="dropdown-menu" id="user-dropdown">
+                <div>
+                    <div id="dropdown-username">Carregando...</div>
+                    <div id="dropdown-email"></div>
+                </div>
+                <a href="#"><i class="fas fa-key"></i> Alterar Senha</a>
+                <a href="#"><i class="fas fa-image"></i> Alterar Foto de Perfil</a>
+                <div class="dropdown-divider"></div>
+                <a href="#" id="logout-button"><i class="fas fa-sign-out-alt"></i> Sair</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <h1 class="main-title">Gestão de Solicitações de Acesso</h1>
+
+        <div class="card table-card">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome Completo</th>
+                            <th>CPF</th>
+                            <th>Email</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requests-table-body">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <div id="approveModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>Aprovar Solicitação de Acesso</h2>
+            <form id="approveForm">
+                <div>
+                    <label for="modalNomeCompleto">Nome Completo</label>
+                    <input type="text" id="modalNomeCompleto" readonly>
+                </div>
+                <div>
+                    <label for="modalUsername">Nome de Usuário</label>
+                    <input type="text" id="modalUsername" required>
+                </div>
+                <div>
+                    <label for="modalEmail">Email</label>
+                    <input type="email" id="modalEmail" readonly>
+                </div>
+                <div>
+                    <label for="modalRole">Atribuir Papel</label>
+                    <select id="modalRole" required>
+                        <option value="user" selected>Usuário Padrão</option>
+                        <option value="admin">Administrador</option>
+                        <option value="master">Master</option>
+                    </select>
+                </div>
+                <div id="modalMessage" class="modal-message"></div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn-cancel" id="cancelApprove">Cancelar</button>
+                    <button type="submit" class="btn-confirm" id="confirmApprove">Aprovar e Criar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // --- API & GLOBALS ---
+        const API_BASE_URL = 'http://localhost:5141/api/Auth'; // VERIFIQUE/AJUSTE ESTA URL
+        let currentRequests = [];
+
+        // --- Funções de Perfil de Usuário (Copiadas do Dashboard) ---
+        function loadUserProfile() {
+            const userString = sessionStorage.getItem('loggedInUser');
+            if (!userString) {
+                console.error('Nenhum usuário logado. Redirecionando para login.');
+                window.location.href = '../login.html';
+                return;
+            }
+            const user = JSON.parse(userString);
+            
+            document.getElementById('user-avatar').textContent = user.username.charAt(0).toUpperCase();
+            document.getElementById('user-display-name').textContent = user.username;
+            document.getElementById('dropdown-username').textContent = user.username;
+            document.getElementById('dropdown-email').textContent = user.email;
+        }
+
+        // --- Função para controlar o menu dropdown do usuário (Copiada do Dashboard) ---
+        function setupUserMenu() {
+            const userMenuButton = document.getElementById('user-menu-button');
+            const userDropdown = document.getElementById('user-dropdown');
+            const logoutButton = document.getElementById('logout-button');
+
+            userMenuButton.addEventListener('click', (event) => {
+                event.stopPropagation();
+                userDropdown.classList.toggle('show');
+            });
+            window.addEventListener('click', (event) => {
+                if (userDropdown.classList.contains('show') && !userDropdown.contains(event.target) && !userMenuButton.contains(event.target)) {
+                    userDropdown.classList.remove('show');
+                }
+            });
+            if(logoutButton) {
+                logoutButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    sessionStorage.removeItem('loggedInUser');
+                    window.location.href = '../login.html';
+                });
+            }
+        }
+
+        // --- MODAL LOGIC ---
+        const approveModal = document.getElementById('approveModal');
+        const approveForm = document.getElementById('approveForm');
+        let currentRequestId = null;
+
+        function showApproveModal(request) {
+            currentRequestId = request.id;
+            document.getElementById('modalNomeCompleto').value = request.nomeCompleto;
+            document.getElementById('modalEmail').value = request.email;
+            document.getElementById('modalRole').value = 'user'; // Default role
+            
+            // Generate username (e.g., first.last)
+            const nameParts = request.nomeCompleto.toLowerCase().split(' ').filter(p => p);
+            const generatedUsername = nameParts.length > 1 
+                ? `${nameParts[0]}.${nameParts[nameParts.length - 1]}`
+                : nameParts.length === 1 ? nameParts[0] : 'novo.usuario';
+            document.getElementById('modalUsername').value = generatedUsername.replace(/[^a-z0-9._]/g, '');
+
+            document.getElementById('modalMessage').style.display = 'none';
+            approveModal.classList.add('show');
+        }
+
+        function hideApproveModal() {
+            approveModal.classList.remove('show');
+            approveForm.reset();
+        }
+
+        // --- API CALLS & RENDERING ---
+        async function fetchAccessRequests() {
+            const tableBody = document.getElementById('requests-table-body');
+            tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px;">Carregando...</td></tr>';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/pending-requests`); // VERIFIQUE/AJUSTE ESTA URL
+                if (!response.ok) throw new Error('Falha ao carregar dados da API.');
+                
+                currentRequests = await response.json();
+                tableBody.innerHTML = '';
+
+                if (currentRequests.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px;">Nenhuma solicitação de acesso pendente.</td></tr>';
+                    return;
+                }
+
+                currentRequests.forEach(req => {
+                    const row = document.createElement('tr');
+                    row.dataset.requestId = req.id;
+                    row.innerHTML = `
+                        <td>${req.nomeCompleto}</td>
+                        <td>${req.cpf}</td>
+                        <td>${req.email}</td>
+                        <td class="action-buttons">
+                            <button class="btn-approve"><i class="fas fa-check"></i> Aprovar</button>
+                            <button class="btn-reject"><i class="fas fa-times"></i> Rejeitar</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error:', error);
+                tableBody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 20px; color: var(--status-danger);">Erro: ${error.message}</td></tr>`;
+            }
+        }
+
+        async function handleRejectRequest(requestId) {
+            if (!confirm('Tem certeza que deseja rejeitar esta solicitação?')) return;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/reject-request/${requestId}`, { method: 'POST' }); // VERIFIQUE/AJUSTE ESTA URL
+                if (!response.ok) {
+                    const err = await response.json().catch(() => ({ message: 'Erro desconhecido.' }));
+                    throw new Error(err.message || 'Falha ao rejeitar.');
+                }
+                const row = document.querySelector(`tr[data-request-id='${requestId}']`);
+                if(row) row.remove();
+                alert('Solicitação rejeitada com sucesso!');
+                fetchAccessRequests(); // Refresh the list
+            } catch (error) {
+                alert(`Erro: ${error.message}`);
+            }
+        }
+        
+        async function handleApproveSubmit(event) {
+            event.preventDefault();
+            const confirmBtn = document.getElementById('confirmApprove');
+            const modalMsg = document.getElementById('modalMessage');
+            
+            confirmBtn.innerHTML = '<span class="loading-spinner"></span>Aprovando...';
+            confirmBtn.disabled = true;
+            modalMsg.style.display = 'none';
+
+            const payload = {
+                solicitacaoId: currentRequestId,
+                role: document.getElementById('modalRole').value,
+                username: document.getElementById('modalUsername').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/approve-request`, { // VERIFIQUE/AJUSTE ESTA URL
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json().catch(() => ({ message: 'Resposta do servidor inválida.' }));
+                if (!response.ok) throw new Error(data.message || 'Erro desconhecido.');
+
+                modalMsg.textContent = data.message;
+                modalMsg.className = 'modal-message success';
+                modalMsg.style.display = 'block';
+
+                setTimeout(() => {
+                    hideApproveModal();
+                    fetchAccessRequests(); // Refresh list
+                }, 1500); // Shorter timeout for smoother experience
+
+            } catch (error) {
+                modalMsg.textContent = error.message;
+                modalMsg.className = 'modal-message error';
+                modalMsg.style.display = 'block';
+            } finally {
+                confirmBtn.innerHTML = '<i class="fas fa-check"></i> Aprovar e Criar';
+                confirmBtn.disabled = false;
+            }
+        }
+
+        // --- EVENT LISTENERS ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserProfile();
+            setupUserMenu();
+            fetchAccessRequests();
+
+            document.getElementById('cancelApprove').addEventListener('click', hideApproveModal);
+            approveForm.addEventListener('submit', handleApproveSubmit);
+
+            document.getElementById('requests-table-body').addEventListener('click', (event) => {
+                const target = event.target;
+                const row = target.closest('tr');
+                if (!row) return;
+
+                const requestId = parseInt(row.dataset.requestId, 10);
+                const requestData = currentRequests.find(r => r.id === requestId);
+
+                if (target.classList.contains('btn-approve') || target.closest('.btn-approve')) { // Handles click on button or its icon
+                    showApproveModal(requestData);
+                } else if (target.classList.contains('btn-reject') || target.closest('.btn-reject')) {
+                    handleRejectRequest(requestId);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

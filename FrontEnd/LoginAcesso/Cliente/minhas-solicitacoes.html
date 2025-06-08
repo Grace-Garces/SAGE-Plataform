@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Solicitações - SAGE</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* Variáveis de Cores e Estilos - Minimalista e Elegante */
+        :root {
+            /* Paleta Primária - Neutra e Limpa */
+            --bg-primary: #f8f9fa; /* Fundo principal, quase branco */
+            --surface-card: #ffffff; /* Fundo de cartões, branco puro */
+            --border-light: #e0e6ed; /* Bordas e divisores suaves */
+
+            /* Cores de Texto */
+            --text-dark: #343a40; /* Texto principal escuro */
+            --text-medium: #6c757d; /* Texto secundário, informações */
+            --text-light: #adb5bd; /* Texto muito claro, dicas */
+
+            /* Cores de Marca/Destaque - Suaves */
+            --brand-main: #5a67d8; /* Um azul mais calmo e profissional */
+            --brand-accent: #7f8de9; /* Uma versão mais clara do azul para hover/ativos */
+            --brand-text-on-dark: #e0e7fa; /* Texto em fundos escuros da marca */
+
+            /* Cores de Status/ABC - Dessaturadas */
+            --status-success: #28a745; /* Verde para sucesso */
+            --status-warning: #ffc107; /* Amarelo/Laranja para aviso */
+            --status-danger: #dc3545; /* Vermelho para perigo/estoque baixo */
+
+            /* Cores ABC para o gráfico (mantidas para consistência de paleta) */
+            --abc-a-color: #4CAF50;
+            --abc-b-color: #FFC107;
+            --abc-c-color: #e6525a;
+
+            /* Sombras - Muito sutis */
+            --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-color: var(--bg-primary);
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* --- Navbar Superior (PADRÃO) --- */
+        .navbar-top {
+            background-color: var(--surface-card);
+            border-bottom: 1px solid var(--border-light);
+            padding: 1.2rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-sm);
+            z-index: 1000;
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .navbar-top .logo {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            color: var(--brand-main);
+        }
+
+        .navbar-top nav {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .navbar-top nav a {
+            color: var(--text-medium);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 0.6rem 0.4rem;
+            position: relative;
+            transition: color 0.3s ease, background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            border-radius: 8px;
+        }
+
+        .navbar-top nav a:hover {
+            color: var(--brand-main);
+            background-color: var(--bg-primary);
+        }
+
+        .navbar-top nav a.active {
+            color: var(--brand-main);
+            font-weight: 700;
+            background-color: var(--bg-primary);
+        }
+
+        .navbar-top nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            width: calc(100% - 1rem);
+            height: 2px;
+            background-color: var(--brand-main);
+            border-radius: 1px;
+            transform: translateX(-50%) scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        .navbar-top nav a.active::after,
+        .navbar-top nav a:hover::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+        .navbar-top nav a i {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            transition: color 0.3s ease;
+        }
+        .navbar-top nav a:hover i,
+        .navbar-top nav a.active i {
+            color: var(--brand-main);
+        }
+
+        /* --- Perfil de Usuário no Header (PADRÃO) --- */
+        .user-profile {
+            position: relative;
+        }
+
+        .user-button {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.5rem 1.1rem;
+            border-radius: 999px;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: var(--shadow-sm);
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .user-button:hover {
+            background-color: var(--border-light);
+            box-shadow: var(--shadow-md);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--brand-main);
+            color: var(--brand-text-on-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.3rem;
+            border: 2px solid var(--brand-accent);
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 120%;
+            right: 0;
+            background-color: var(--surface-card);
+            border-radius: 0.8rem;
+            box-shadow: var(--shadow-md);
+            width: 280px;
+            z-index: 101;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+            opacity: 0;
+            transform: translateY(-10px) scale(0.98);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform-origin: top right;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .dropdown-menu > div {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            background-color: var(--bg-primary);
+        }
+
+        .dropdown-menu > div div:first-child {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 1rem;
+        }
+
+        .dropdown-menu > div div:last-child {
+            font-size: 0.85rem;
+            color: var(--text-medium);
+        }
+
+        .dropdown-menu a {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.9rem 1.5rem;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: var(--bg-primary);
+            color: var(--brand-main);
+        }
+        .dropdown-menu a i {
+            color: var(--text-medium);
+            transition: color 0.2s ease;
+        }
+        .dropdown-menu a:hover i {
+            color: var(--brand-main);
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background-color: var(--border-light);
+            margin: 0.6rem 0;
+        }
+
+        /* --- Conteúdo Principal (PADRÃO) --- */
+        .main-content {
+            flex-grow: 1;
+            padding: 2.5rem 3rem;
+            overflow-y: auto;
+            background-color: var(--bg-primary);
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .main-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0;
+            text-align: center;
+        }
+        
+        /* --- Summary Grid (PADRÃO) --- */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background-color: var(--surface-card);
+            padding: 1.5rem;
+            border-radius: 0.8rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+        .stat-card p {
+            margin: 0;
+            font-weight: 600;
+            color: var(--text-medium);
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+        .stat-card span {
+            font-family: 'Inter', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            display: block;
+            margin-top: 0.5rem;
+        }
+        /* Cores específicas para os spans de status nos stat-cards */
+        #pending-requests { color: var(--status-warning); }
+        #approved-requests { color: var(--status-success); }
+        #rejected-requests { color: var(--status-danger); }
+
+        /* --- Table Styles (PADRÃO) --- */
+        .card {
+            background-color: var(--surface-card);
+            padding: 2rem 2.5rem; /* Ajustado padding do card */
+            border-radius: 0.8rem;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+        }
+        .table-container { 
+            overflow-x: auto; 
+            border-radius: 0.6rem; 
+            border: 1px solid var(--border-light); 
+            background-color: var(--surface-card);
+        }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; }
+        th, td { padding: 1.2rem 1.5rem; text-align: left; border-bottom: 1px solid var(--border-light); white-space: nowrap; }
+        thead { background-color: var(--bg-primary); }
+        th { 
+            font-family: 'Inter', sans-serif; 
+            font-weight: 600; 
+            font-size: 0.85rem; 
+            text-transform: uppercase; 
+            color: var(--text-medium); 
+        }
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:hover { background-color: var(--bg-primary); }
+        
+        /* Status Badges (PADRÃO) */
+        .status {
+            padding: 0.35rem 0.85rem;
+            border-radius: 999px;
+            color: white;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-align: center;
+            display: inline-block;
+            text-transform: capitalize;
+            border: 1px solid transparent; /* Adicionado para consistência */
+        }
+        .status-pendente { background-color: var(--status-warning); color: var(--text-dark); border-color: rgba(255,193,7,0.3); } /* Laranja */
+        .status-aprovada { background-color: var(--status-success); border-color: rgba(40,167,69,0.3); } /* Verde */
+        .status-recusada { background-color: var(--status-danger); border-color: rgba(220,53,69,0.3); } /* Vermelho */
+        /* Mapeamento de status específicos para classes (se houver) */
+        .status-pendente-aprovacao-master,
+        .status-recusada-pelo-admin,
+        .status-recusada-pelo-master {
+            background-color: var(--status-danger); /* Mantido vermelho para esses casos */
+            border-color: rgba(220,53,69,0.3);
+            color: white; /* Garante texto branco em fundos escuros */
+        }
+        .status-pendente---aprovacao-master { /* Cor para status pendente master (se houver) */
+            background-color: var(--brand-main); /* Azul da marca para este status */
+            border-color: rgba(90,103,216,0.3);
+            color: white;
+        }
+
+        /* Botão Nova Solicitação */
+        .new-request-btn {
+            background-color: var(--brand-main);
+            color: white;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background-color 0.2s, box-shadow 0.2s, transform 0.2s;
+            box-shadow: var(--shadow-sm);
+        }
+        .new-request-btn:hover {
+            background-color: var(--brand-accent);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .navbar-top, .main-content {
+                padding: 1.5rem 2rem;
+            }
+            .navbar-top nav {
+                gap: 1.5rem;
+            }
+            .summary-grid {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Ajuste para caber mais */
+            }
+            .stat-card {
+                padding: 1rem 1.2rem;
+            }
+            .stat-card span {
+                font-size: 1.5rem;
+            }
+            .card {
+                padding: 1.5rem 2rem;
+            }
+            th, td {
+                padding: 1rem 1.2rem;
+            }
+            .new-request-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .navbar-top {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
+            }
+            .navbar-top .logo {
+                width: 100%;
+                text-align: center;
+                margin-bottom: 1rem;
+            }
+            .navbar-top nav {
+                width: 100%;
+                justify-content: space-around;
+                flex-wrap: wrap;
+                margin-top: 1rem;
+            }
+            .navbar-top nav a {
+                flex-direction: column;
+                font-size: 0.85rem;
+                padding: 0.5rem 0.5rem;
+                gap: 0.3rem;
+            }
+            .navbar-top nav a::after {
+                display: none;
+            }
+            .user-profile {
+                width: 100%;
+                justify-content: center;
+                margin-top: 1.5rem;
+            }
+            .main-title {
+                font-size: 2.2rem;
+            }
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+            .header-actions {
+                flex-direction: column;
+                gap: 1rem;
+                width: 100%;
+                align-items: center;
+            }
+            .new-request-btn {
+                width: fit-content;
+                align-self: center; /* Centraliza o botão */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar-top {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 1rem;
+            }
+            .navbar-top .logo {
+                font-size: 1.8rem;
+            }
+            .navbar-top nav {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.4rem;
+            }
+            .navbar-top nav a {
+                width: 100%;
+                justify-content: flex-start;
+                padding: 0.6rem 0.8rem;
+            }
+            .user-profile {
+                margin-top: 1rem;
+                justify-content: center;
+            }
+            .main-content {
+                padding: 1rem;
+                gap: 1.5rem;
+            }
+            .main-title {
+                font-size: 1.8rem;
+            }
+            .card {
+                padding: 1.2rem 1.5rem;
+                border-radius: 1.2rem;
+            }
+            th, td {
+                padding: 1rem 1rem;
+                font-size: 0.85rem;
+            }
+            .stat-card p {
+                font-size: 0.8rem;
+            }
+            .stat-card span {
+                font-size: 1.2rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .navbar-top .logo {
+                font-size: 1.6rem;
+            }
+            .user-button {
+                padding: 0.4rem 1rem;
+                gap: 0.6rem;
+            }
+            .user-avatar {
+                width: 38px;
+                height: 38px;
+                font-size: 1.2rem;
+            }
+            .dropdown-menu {
+                width: 250px;
+                right: 5%;
+            }
+            .new-request-btn {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar-top">
+        <div class="logo">SAGE</div>
+        <nav>
+            <a href="Dashboard.html">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </a>
+            <a href="solicitar-itens.html">
+                <i class="fas fa-file-invoice"></i> Solicitar Itens
+            </a>
+            <a href="Receita.html">
+                <i class="fas fa-utensils"></i> Cardápio
+            </a>
+            <a href="minhas-solicitacoes.html" class="active">
+                <i class="fas fa-clipboard-list"></i> Minhas Solicitações
+            </a>
+            </nav>
+        <div class="user-profile" id="user-profile-placeholder">
+            </div>
+    </header>
+
+    <main class="main-content">
+        <h1 class="main-title">Minhas Solicitações</h1>
+
+        <section class="summary-grid">
+            <div class="stat-card">
+                <p>Total de Pedidos</p>
+                <span id="total-requests">0</span>
+            </div>
+            <div class="stat-card">
+                <p>Pendentes</p>
+                <span id="pending-requests">0</span>
+            </div>
+            <div class="stat-card">
+                <p>Aprovadas</p>
+                <span id="approved-requests">0</span>
+            </div>
+            <div class="stat-card">
+                <p>Recusadas</p>
+                <span id="rejected-requests">0</span>
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Item Solicitado</th>
+                            <th>Quantidade</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requests-table-body">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        async function fetchMyRequests() {
+            const user = JSON.parse(sessionStorage.getItem('loggedInUser'));
+            if (!user || !user.username) {
+                console.error("Usuário não encontrado na sessão.");
+                window.location.href = '../login.html'; // Garante que apenas usuários logados acessem
+                return;
+            }
+
+            const apiUrl = `http://localhost:5141/api/Solicitacao/minhas/${encodeURIComponent(user.username)}`; // VERIFIQUE/AJUSTE ESTA URL
+            const tableBody = document.getElementById('requests-table-body');
+            tableBody.innerHTML = `<tr><td colspan="4" style="text-align: center;">Carregando suas solicitações...</td></tr>`;
+
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error(`Erro na API: ${response.statusText}`);
+                }
+                const requests = await response.json();
+                
+                tableBody.innerHTML = ''; 
+                if (requests.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="4" style="text-align: center;">Você ainda não fez nenhuma solicitação.</td></tr>`;
+                    return;
+                }
+
+                let pendingCount = 0;
+                let approvedCount = 0;
+                let rejectedCount = 0;
+
+                requests.forEach(req => {
+                    let statusKey = ''; // Initialize empty
+                    const lowerCaseStatus = req.status.toLowerCase();
+
+                    // Correct mapping for status classes
+                    if (lowerCaseStatus.includes('pendente')) {
+                        statusKey = 'pendente'; 
+                        pendingCount++;
+                    } else if (lowerCaseStatus.includes('aprovada')) {
+                        statusKey = 'aprovada';
+                        approvedCount++;
+                    } else if (lowerCaseStatus.includes('recusada')) { // Catches "recusada" and "recusada-pelo-admin"
+                        statusKey = 'recusada';
+                        rejectedCount++;
+                    } else {
+                        statusKey = 'desconhecido'; // Fallback for unknown status
+                    }
+                    const statusClass = `status-${statusKey}`;
+
+                    const row = `
+                        <tr>
+                            <td>${new Date(req.dataSolicitacao).toLocaleDateString('pt-BR')}</td>
+                            <td>${req.nomeItem}</td>
+                            <td>${req.quantidadeSolicitada}</td>
+                            <td><span class="status ${statusClass}">${req.status}</span></td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+
+                document.getElementById('total-requests').textContent = requests.length;
+                document.getElementById('pending-requests').textContent = pendingCount;
+                document.getElementById('approved-requests').textContent = approvedCount;
+                document.getElementById('rejected-requests').textContent = rejectedCount;
+            } catch (error) {
+                console.error('Falha ao buscar solicitações:', error);
+                tableBody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--status-danger);">Falha ao carregar os dados. Verifique a conexão com o servidor.</td></tr>`;
+            }
+        }
+        
+        // --- Funções de Perfil de Usuário (PADRÃO) ---
+        function loadUserProfile() {
+            const userString = sessionStorage.getItem('loggedInUser');
+            if (!userString) {
+                console.error('Nenhum usuário logado. Redirecionando para login.');
+                window.location.href = '../login.html'; // Garante que apenas usuários logados acessem
+                return;
+            }
+            const user = JSON.parse(userString);
+            
+            const userProfilePlaceholder = document.getElementById('user-profile-placeholder');
+            if (userProfilePlaceholder) {
+                userProfilePlaceholder.innerHTML = `
+                    <button class="user-button" id="user-menu-button">
+                        <div class="user-avatar">${user.username ? user.username.charAt(0).toUpperCase() : '?'}</div>
+                        <span id="user-display-name">${user.username || 'Usuário'}</span>
+                    </button>
+                    <div class="dropdown-menu" id="user-dropdown">
+                        <div>
+                            <div id="dropdown-username">${user.username || 'Carregando...'}</div>
+                            <div id="dropdown-email">${user.email || ''}</div>
+                        </div>
+                        <a href="#"><i class="fas fa-key"></i> Alterar Senha</a>
+                        <a href="#"><i class="fas fa-image"></i> Alterar Foto de Perfil</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" id="logout-button"><i class="fas fa-sign-out-alt"></i> Sair</a>
+                    </div>
+                `;
+                setupUserMenu();
+            }
+        }
+
+        // --- Função para controlar o menu dropdown do usuário (PADRÃO) ---
+        function setupUserMenu() {
+            const userMenuButton = document.getElementById('user-menu-button');
+            const userDropdown = document.getElementById('user-dropdown');
+            const logoutButton = document.getElementById('logout-button');
+            
+            if (userMenuButton && userDropdown) {
+                userMenuButton.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    userDropdown.classList.toggle('show');
+                });
+                
+                window.addEventListener('click', (e) => {
+                    if (userDropdown.classList.contains('show') && !userDropdown.contains(e.target) && !userMenuButton.contains(e.target)) {
+                        userDropdown.classList.remove('show');
+                    }
+                });
+            }
+            if(logoutButton) {
+                logoutButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    sessionStorage.removeItem('loggedInUser');
+                    window.location.href = '../login.html';
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchMyRequests();
+            loadUserProfile();
+        });
+    </script>
+</body>
+</html>

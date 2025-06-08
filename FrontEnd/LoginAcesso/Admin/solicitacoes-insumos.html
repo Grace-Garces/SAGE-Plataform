@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprovação de Solicitações - SAGE Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* Variáveis de Cores e Estilos - Minimalista e Elegante (Padrão do Dashboard) */
+        :root {
+            /* Paleta Primária - Neutra e Limpa */
+            --bg-primary: #f8f9fa; /* Fundo principal, quase branco */
+            --surface-card: #ffffff; /* Fundo de cartões, branco puro */
+            --border-light: #e0e6ed; /* Bordas e divisores suaves */
+
+            /* Cores de Texto */
+            --text-dark: #343a40; /* Texto principal escuro */
+            --text-medium: #6c757d; /* Texto secundário, informações */
+            --text-light: #adb5bd; /* Texto muito claro, dicas */
+
+            /* Cores de Marca/Destaque - Suaves */
+            --brand-main: #5a67d8; /* Um azul mais calmo e profissional */
+            --brand-accent: #7f8de9; /* Uma versão mais clara do azul para hover/ativos */
+            --brand-text-on-dark: #e0e7fa; /* Texto em fundos escuros da marca */
+
+            /* Cores de Status/ABC - Dessaturadas */
+            --status-success: #28a745; /* Verde para sucesso */
+            --status-warning: #ffc107; /* Amarelo/Laranja para aviso */
+            --status-danger: #dc3545; /* Vermelho para perigo/estoque baixo */
+
+            /* Cores ABC para o gráfico (mantidas para consistência de paleta) */
+            --abc-a-color: #4CAF50;
+            --abc-b-color: #FFC107;
+            --abc-c-color: #e6525a;
+
+            /* Sombras - Muito sutis */
+            --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-color: var(--bg-primary);
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column; /* Necessário para navbar no topo */
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* --- Navbar Superior (Padrão do Dashboard) --- */
+        .navbar-top {
+            background-color: var(--surface-card);
+            border-bottom: 1px solid var(--border-light);
+            padding: 1.2rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-sm);
+            z-index: 1000;
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .navbar-top .logo {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            color: var(--brand-main);
+        }
+
+        .navbar-top nav {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .navbar-top nav a {
+            color: var(--text-medium);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 0.6rem 0.4rem;
+            position: relative;
+            transition: color 0.3s ease, background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            border-radius: 8px;
+        }
+
+        .navbar-top nav a:hover {
+            color: var(--brand-main);
+            background-color: var(--bg-primary);
+        }
+
+        .navbar-top nav a.active {
+            color: var(--brand-main);
+            font-weight: 700;
+            background-color: var(--bg-primary);
+        }
+
+        .navbar-top nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            width: calc(100% - 1rem);
+            height: 2px;
+            background-color: var(--brand-main);
+            border-radius: 1px;
+            transform: translateX(-50%) scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        .navbar-top nav a.active::after,
+        .navbar-top nav a:hover::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+        .navbar-top nav a i {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            transition: color 0.3s ease;
+        }
+        .navbar-top nav a:hover i,
+        .navbar-top nav a.active i {
+            color: var(--brand-main);
+        }
+
+        /* --- Perfil de Usuário no Header (Padrão do Dashboard) --- */
+        .user-profile {
+            position: relative;
+        }
+
+        .user-button {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.5rem 1.1rem;
+            border-radius: 999px;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: var(--shadow-sm);
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .user-button:hover {
+            background-color: var(--border-light);
+            box-shadow: var(--shadow-md);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--brand-main);
+            color: var(--brand-text-on-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.3rem;
+            border: 2px solid var(--brand-accent);
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 120%;
+            right: 0;
+            background-color: var(--surface-card);
+            border-radius: 0.8rem;
+            box-shadow: var(--shadow-md);
+            width: 280px;
+            z-index: 101;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+            opacity: 0;
+            transform: translateY(-10px) scale(0.98);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform-origin: top right;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .dropdown-menu > div {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            background-color: var(--bg-primary);
+        }
+
+        .dropdown-menu > div div:first-child {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 1rem;
+        }
+
+        .dropdown-menu > div div:last-child {
+            font-size: 0.85rem;
+            color: var(--text-medium);
+        }
+
+        .dropdown-menu a {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.9rem 1.5rem;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: var(--bg-primary);
+            color: var(--brand-main);
+        }
+        .dropdown-menu a i {
+            color: var(--text-medium);
+            transition: color 0.2s ease;
+        }
+        .dropdown-menu a:hover i {
+            color: var(--brand-main);
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background-color: var(--border-light);
+            margin: 0.6rem 0;
+        }
+
+        /* --- Conteúdo Principal (Padrão do Dashboard) --- */
+        .main-content {
+            flex-grow: 1;
+            padding: 2.5rem 3rem;
+            overflow-y: auto;
+            background-color: var(--bg-primary);
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .main-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0;
+            text-align: center;
+        }
+
+        /* --- Cards (Padrão do Dashboard) --- */
+        .card {
+            background-color: var(--surface-card);
+            padding: 2rem 2.5rem;
+            border-radius: 0.8rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .card h2 { /* Título dentro do card */
+            margin-top: 0;
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        .card h2::after { /* Linha de destaque para o título do card */
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 60px;
+            height: 3px;
+            background-color: var(--brand-main);
+            border-radius: 1px;
+        }
+        
+        /* --- Tabela (Padrão do Dashboard) --- */
+        .table-card { /* Usando o mesmo estilo de .card para o container da tabela */
+            /* Propriedades já definidas em .card */
+            padding: 2rem 2.5rem; /* Ajuste para ter espaço */
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 0.6rem;
+            border: 1px solid var(--border-light); /* Borda ao redor da tabela */
+            background-color: var(--surface-card); /* Garante fundo branco para a tabela */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            text-align: left;
+            overflow: hidden; /* Importante para o border-radius no container */
+        }
+
+        th, td {
+            padding: 1.2rem 1.5rem;
+            transition: background-color 0.2s ease;
+            white-space: nowrap; /* Evita quebra de linha em colunas pequenas */
+        }
+
+        thead {
+            background-color: var(--bg-primary); /* Fundo sutil para o cabeçalho */
+        }
+
+        th {
+            font-weight: 600;
+            color: var(--text-medium);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            position: sticky; /* Fixa o cabeçalho ao rolar */
+            top: 0;
+            z-index: 10;
+        }
+        
+        tbody tr {
+            border-bottom: 1px solid var(--border-light); /* Linhas finas entre as rows */
+        }
+        tbody tr:last-child {
+            border-bottom: none; /* Remove a borda da última linha */
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: rgba(0,0,0,0.01); /* Efeito zebrada muito sutil */
+        }
+        
+        tbody tr:hover {
+            background-color: var(--bg-primary); /* Fundo claro no hover */
+            cursor: pointer;
+        }
+
+        /* Botões de Ação - Padronizados */
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .action-buttons button {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: white;
+            transition: all 0.2s ease-in-out;
+            font-size: 0.85rem;
+        }
+        .action-buttons button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+        .action-buttons button:active {
+            transform: translateY(0);
+        }
+
+        .btn-approve { background-color: var(--status-success); }
+        .btn-reject { background-color: var(--status-danger); }
+
+        /* Estilos de Status (Solicitações de Insumos) */
+        .status { 
+            padding: 0.25rem 0.75rem; 
+            border-radius: 999px; 
+            color: white; /* Cor padrão do texto de status */
+            font-weight: 600; 
+            font-size: 0.75rem; 
+            text-align: center; 
+            display: inline-block; 
+            border: 1px solid transparent; /* Borda sutil */
+        }
+        /* Mapeamento das classes de status para as novas variáveis */
+        .status-pendente-aprovacao-admin { background-color: var(--status-warning); color: var(--text-dark); border-color: rgba(var(--status-warning-rgb), 0.3); }
+        .status-pendente-aprovacao-master { background-color: var(--brand-main); border-color: var(--brand-accent); } /* Azul para master */
+        .status-aprovada { background-color: var(--status-success); border-color: rgba(var(--status-success-rgb), 0.3); }
+        .status-recusada-pelo-admin, .status-recusada { background-color: var(--status-danger); border-color: rgba(var(--status-danger-rgb), 0.3); }
+        .status-desconhecido { background-color: var(--text-medium); border-color: rgba(var(--text-medium-rgb), 0.3); }
+        /* Definindo RGB para cores de status (para uso com RGBA e bordas) */
+        :root {
+            --status-warning-rgb: 255, 193, 7;
+            --status-success-rgb: 40, 167, 69;
+            --status-danger-rgb: 220, 53, 69;
+            --text-medium-rgb: 108, 117, 125;
+        }
+
+        /* Alerta de Orçamento */
+        .alert-message {
+            background-color: var(--surface-card); /* Fundo branco do card */
+            border-left: 4px solid var(--status-warning); /* Linha laranja de alerta */
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-dark); /* Texto escuro */
+            font-weight: 600;
+            border-radius: 0.5rem;
+            box-shadow: var(--shadow-sm);
+            display: none; /* Escondido por padrão */
+        }
+        .alert-message.show { display: block; }
+        .alert-message strong { color: var(--status-warning); } /* Texto do percentual em laranja */
+
+        /* Modal de Confirmação (custom-modal) */
+        .modal-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background-color: rgba(0,0,0,0.4); /* Fundo escuro mais suave */
+            display: flex; justify-content: center; align-items: center; 
+            z-index: 1000; 
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out; 
+            opacity: 0; visibility: hidden; 
+        }
+        .modal-overlay.show { opacity: 1; visibility: visible; }
+        
+        .modal-content { 
+            background-color: var(--surface-card); padding: 2rem; border-radius: 0.8rem; 
+            box-shadow: var(--shadow-md); max-width: 450px; width: 90%; text-align: center; 
+            transform: translateY(-20px) scale(0.95); 
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out; 
+            border: 1px solid var(--border-light);
+        }
+        .modal-overlay.show .modal-content { transform: translateY(0) scale(1); opacity: 1;}
+        .modal-content h3 { 
+            margin-top: 0; color: var(--text-dark); font-size: 1.8rem; margin-bottom: 1rem; 
+            padding-bottom: 0.8rem; border-bottom: 1px solid var(--border-light);
+        }
+        .modal-content p { color: var(--text-medium); margin-bottom: 1.5rem; }
+        .modal-buttons { display: flex; justify-content: center; gap: 0.75rem; }
+        .modal-buttons button { 
+            padding: 0.7rem 1.4rem; border-radius: 0.5rem; font-weight: 700; cursor: pointer; 
+            transition: all 0.2s ease-in-out; border: none; color: white; /* Texto branco */
+        }
+        .modal-buttons button:active { transform: scale(0.97); }
+        .modal-confirm { background-color: var(--status-success); }
+        .modal-confirm:hover { background-color: #218838; } /* Um pouco mais escuro */
+        .modal-cancel { background-color: var(--text-medium); } /* Cinza para cancelar */
+        .modal-cancel:hover { background-color: #5a6268; } /* Um pouco mais escuro */
+
+        /* Spinner de Carregamento */
+        /* REMOVIDO background-color do overlay para não escurecer a tela */
+        .loading-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            /* background-color: rgba(0,0,0,0.0); /* Removido background escuro */
+            display: flex; justify-content: center; align-items: center; 
+            z-index: 1000; 
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out; 
+            opacity: 0; visibility: hidden; 
+        }
+        .loading-overlay.show { opacity: 1; visibility: visible; }
+        
+        .spinner { 
+            border: 4px solid rgba(0, 0, 0, 0.1); 
+            border-left-color: var(--brand-main); /* Cor da marca para o spinner */
+            border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; 
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Responsividade (Padrão do Dashboard) */
+        @media (max-width: 1200px) {
+            .navbar-top, .main-content {
+                padding: 1.5rem 2rem;
+            }
+            .navbar-top nav {
+                gap: 1.5rem;
+            }
+            .card {
+                padding: 1.5rem 2rem;
+            }
+            .card h2 {
+                font-size: 1.4rem;
+            }
+            th, td {
+                padding: 1rem 1.2rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .navbar-top {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
+            }
+            .navbar-top .logo {
+                width: 100%;
+                text-align: center;
+                margin-bottom: 1rem;
+            }
+            .navbar-top nav {
+                width: 100%;
+                justify-content: space-around;
+                flex-wrap: wrap;
+                margin-top: 1rem;
+            }
+            .navbar-top nav a {
+                flex-direction: column;
+                font-size: 0.85rem;
+                padding: 0.5rem 0.5rem;
+                gap: 0.3rem;
+            }
+            .navbar-top nav a::after {
+                display: none;
+            }
+            .user-profile {
+                width: 100%;
+                justify-content: center;
+                margin-top: 1.5rem;
+            }
+            .main-title {
+                font-size: 2.2rem;
+            }
+            .modal-content {
+                max-width: 350px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar-top {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 1rem;
+            }
+            .navbar-top .logo {
+                font-size: 1.8rem;
+            }
+            .navbar-top nav {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.4rem;
+            }
+            .navbar-top nav a {
+                width: 100%;
+                justify-content: flex-start;
+                padding: 0.6rem 0.8rem;
+            }
+            .user-profile {
+                margin-top: 1rem;
+                justify-content: center;
+            }
+            .main-content {
+                padding: 1rem;
+                gap: 1.5rem;
+            }
+            .main-title {
+                font-size: 1.8rem;
+            }
+            .card {
+                padding: 1.2rem 1.5rem;
+                border-radius: 1.2rem;
+            }
+            .card h2 {
+                font-size: 1.2rem;
+                padding-bottom: 0.8rem;
+                margin-bottom: 1.2rem;
+            }
+            .card h2::after {
+                width: 40px;
+                height: 3px;
+            }
+            th, td {
+                padding: 1rem 1rem;
+                font-size: 0.85rem;
+            }
+            .action-buttons button {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.8rem;
+            }
+            .modal-content {
+                padding: 1.5rem;
+            }
+            .modal-content h3 {
+                font-size: 1.5rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .navbar-top .logo {
+                font-size: 1.6rem;
+            }
+            .user-button {
+                padding: 0.4rem 1rem;
+                gap: 0.6rem;
+            }
+            .user-avatar {
+                width: 38px;
+                height: 38px;
+                font-size: 1.2rem;
+            }
+            .dropdown-menu {
+                width: 250px;
+                right: 5%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar-top">
+        <div class="logo">SAGE</div>
+        <nav>
+            <a href="Admin.html">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </a>
+            <a href="solicitacoes-acesso.html">
+                <i class="fas fa-user-plus"></i> Acessos
+            </a>
+            <a href="solicitacoes-insumos.html" class="active">
+                <i class="fas fa-clipboard-check"></i> Compras
+            </a>
+            <a href="register.html">
+                <i class="fas fa-user-friends"></i> Usuário
+            </a>
+            <a href="gerenciar-usuarios.html">
+                <i class="fas fa-users-cog"></i> Gerenciar
+            </a>
+        </nav>
+        <div class="user-profile">
+            <button class="user-button" id="user-menu-button">
+                <div class="user-avatar" id="user-avatar">?</div>
+                <span id="user-display-name">Usuário</span>
+            </button>
+            <div class="dropdown-menu" id="user-dropdown">
+                <div>
+                    <div id="dropdown-username">Carregando...</div>
+                    <div id="dropdown-email"></div>
+                </div>
+                <a href="#"><i class="fas fa-key"></i> Alterar Senha</a>
+                <a href="#"><i class="fas fa-image"></i> Alterar Foto de Perfil</a>
+                <div class="dropdown-divider"></div>
+                <a href="#" id="logout-button"><i class="fas fa-sign-out-alt"></i> Sair</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <h1 class="main-title">Aprovação de Compras</h1>
+
+        <div id="budget-alert" class="alert-message">
+            <i class="fas fa-exclamation-triangle"></i> Alerta: Você já utilizou <strong id="budget-usage-percentage">XX%</strong> do orçamento mensal.
+        </div>
+
+        <div class="card table-card">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Solicitante</th>
+                            <th>Item</th>
+                            <th>Qtd.</th>
+                            <th>Valor Total</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requests-table-body">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <div id="custom-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="modal-title">Confirmação</h3>
+            <p id="modal-message">Tem certeza?</p>
+            <div class="modal-buttons">
+                <button id="modal-cancel-btn" class="modal-cancel">Cancelar</button>
+                <button id="modal-confirm-btn" class="modal-confirm">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div> </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5141/api'; // VERIFIQUE/AJUSTE ESTA URL
+
+        // --- Funções Utilitárias ---
+        const formatCurrency = (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+        // showLoading e hideLoading agora manipulam a overlay corretamente
+        const showLoading = () => document.getElementById('loading-overlay').classList.add('show');
+        const hideLoading = () => document.getElementById('loading-overlay').classList.remove('show');
+
+        // --- Funções de Modal (Copiadas do Dashboard) ---
+        const customModal = document.getElementById('custom-modal');
+        let confirmCallback = null;
+        function showCustomModal(title, message, onConfirm) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-message').textContent = message;
+            confirmCallback = onConfirm;
+            customModal.classList.add('show');
+        }
+        function hideCustomModal() {
+            customModal.classList.remove('show');
+            confirmCallback = null;
+        }
+        document.getElementById('modal-confirm-btn').addEventListener('click', () => {
+            if (confirmCallback) confirmCallback();
+            hideCustomModal();
+        });
+        document.getElementById('modal-cancel-btn').addEventListener('click', hideCustomModal);
+        
+        // --- Lógica da Aplicação ---
+        async function displayBudgetAlert() {
+            const budgetAlertElement = document.getElementById('budget-alert');
+            const budgetUsageEl = document.getElementById('budget-usage-percentage');
+            try {
+                // VERIFIQUE/AJUSTE ESTAS URLs
+                const [budgetRes, gastosRes, thresholdRes] = await Promise.all([
+                    fetch(`${API_BASE_URL}/GlobalConfig/BudgetValue`), 
+                    fetch(`${API_BASE_URL}/Solicitacao/gastos-aprovados-mes`),
+                    fetch(`${API_BASE_URL}/GlobalConfig/AlertThreshold`) 
+                ]);
+
+                if (!budgetRes.ok) throw new Error(`Erro na API de orçamento: ${budgetRes.statusText}`);
+                if (!gastosRes.ok) throw new Error(`Erro na API de gastos: ${gastosRes.statusText}`);
+                if (!thresholdRes.ok) throw new Error(`Erro na API de threshold: ${thresholdRes.statusText}`);
+
+                const totalBudget = (await budgetRes.json()).configValue || 0;
+                const totalGastosMes = (await gastosRes.json()).totalGastosAprovadosMes || 0;
+                const alertThreshold = (await thresholdRes.json()).configValue || 0;
+
+                if (totalBudget > 0 && alertThreshold > 0) {
+                    const usagePercentage = (totalGastosMes / totalBudget) * 100;
+                    if (usagePercentage >= alertThreshold) {
+                        budgetUsageEl.textContent = `${usagePercentage.toFixed(1)}%`;
+                        budgetAlertElement.classList.add('show');
+                    } else {
+                        budgetAlertElement.classList.remove('show');
+                    }
+                } else {
+                    budgetAlertElement.classList.remove('show');
+                }
+            } catch (error) {
+                console.error('Erro ao buscar dados do orçamento:', error);
+                budgetAlertElement.classList.remove('show'); 
+            }
+        }
+
+        async function fetchPendingAdminRequests() {
+            const tableBody = document.getElementById('requests-table-body');
+            tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 20px;">Carregando...</td></tr>`;
+            showLoading(); // Mostra o spinner de carregamento
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/Solicitacao/pendente-admin`); // VERIFIQUE/AJUSTE ESTA URL
+                if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+                const requests = await response.json();
+                
+                tableBody.innerHTML = '';
+                if (requests.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 20px;">Nenhuma solicitação pendente.</td></tr>`;
+                    return;
+                }
+
+                requests.forEach(req => {
+                    // Normaliza a string de status para corresponder às classes CSS
+                    const statusMap = {
+                        "Pendente - Aprovação Admin": "pendente-aprovacao-admin",
+                        "Pendente - Aprovação Master": "pendente-aprovacao-master",
+                        "Aprovada": "aprovada",
+                        "Recusada pelo Admin": "recusada-pelo-admin",
+                        "Recusada": "recusada"
+                    };
+                    const normalizedStatus = statusMap[req.status] || 'desconhecido';
+                    const valorTotal = req.valorUnitario * req.quantidadeSolicitada;
+                    const row = `
+                        <tr>
+                            <td>${new Date(req.dataSolicitacao).toLocaleDateString('pt-BR')}</td>
+                            <td>${req.solicitante}</td>
+                            <td>
+                                <div style="font-weight: 600;">${req.nomeItem}</div>
+                                <div style="font-size: 0.9rem; color: var(--text-medium);">${req.justificativa || 'Sem justificativa'}</div>
+                            </td>
+                            <td>${req.quantidadeSolicitada}</td>
+                            <td style="font-weight: 600;">${formatCurrency(valorTotal)}</td>
+                            <td><span class="status status-${normalizedStatus}">${req.status}</span></td>
+                            <td class="action-buttons">
+                                <button class="btn-approve" data-id="${req.solicitacaoID}"><i class="fas fa-check"></i> Aprovar</button>
+                                <button class="btn-reject" data-id="${req.solicitacaoID}"><i class="fas fa-times"></i> Rejeitar</button>
+                            </td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+            } catch (error) {
+                console.error('Falha ao buscar solicitações:', error);
+                tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 20px; color: var(--status-danger);">Erro ao carregar dados: ${error.message}</td></tr>`;
+            } finally {
+                hideLoading(); // Esconde o spinner de carregamento
+            }
+        }
+
+        async function updateRequestStatusAdmin(id, action, adminUsername) {
+            showLoading(); // Mostra o spinner de carregamento
+            try {
+                // VERIFIQUE/AJUSTE ESTA URL
+                const response = await fetch(`${API_BASE_URL}/Solicitacao/${action}/${id}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(adminUsername) 
+                });
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ message: 'Erro desconhecido.' }));
+                    throw new Error(errorData.message || 'Falha ao atualizar status.');
+                }
+                
+                await Promise.all([fetchPendingAdminRequests(), displayBudgetAlert()]); // Recarregar ambos
+                showCustomModal('Sucesso!', `Ação concluída com sucesso.`, () => {});
+            } catch (error) {
+                console.error(`Erro ao processar solicitação:`, error);
+                showCustomModal('Erro!', `Não foi possível processar a solicitação: ${error.message}`, () => {});
+            } finally {
+                hideLoading(); // Esconde o spinner de carregamento
+            }
+        }
+
+        function setupTableActionsAdmin() {
+            const tableBody = document.getElementById('requests-table-body');
+            const user = JSON.parse(sessionStorage.getItem('loggedInUser'));
+
+            if (!user || !user.username) {
+                console.error("Admin não logado.");
+                window.location.href = '../login.html'; /* Redireciona para login se não houver usuário logado */
+                return;
+            }
+
+            tableBody.addEventListener('click', (event) => {
+                const target = event.target.closest('button');
+                if (!target) return;
+
+                const requestId = target.getAttribute('data-id');
+                if (!requestId) return;
+
+                const adminUsername = user.username; // Obtém o nome de usuário do admin logado
+
+                if (target.classList.contains('btn-approve')) {
+                    showCustomModal('Aprovar Solicitação', `Confirma a APROVAÇÃO da solicitação ${requestId}?`,
+                        () => updateRequestStatusAdmin(requestId, 'aprovar-admin', adminUsername));
+                } else if (target.classList.contains('btn-reject')) {
+                    showCustomModal('Rejeitar Solicitação', `Confirma a REJEIÇÃO da solicitação ${requestId}?`,
+                        () => updateRequestStatusAdmin(requestId, 'rejeitar', adminUsername));
+                }
+            });
+        }
+        
+        // --- Funções de Perfil e Menu (Reutilizadas do Dashboard) ---
+        function loadUserProfile() {
+            const userString = sessionStorage.getItem('loggedInUser');
+            if (!userString) {
+                window.location.href = '../login.html'; return;
+            }
+            const user = JSON.parse(userString);
+            
+            document.getElementById('user-avatar').textContent = user.username.charAt(0).toUpperCase();
+            document.getElementById('user-display-name').textContent = user.username;
+            document.getElementById('dropdown-username').textContent = user.username;
+            document.getElementById('dropdown-email').textContent = user.email;
+        }
+
+        function setupUserMenu() {
+            const userMenuButton = document.getElementById('user-menu-button');
+            const userDropdown = document.getElementById('user-dropdown');
+            const logoutButton = document.getElementById('logout-button');
+
+            userMenuButton.addEventListener('click', (event) => {
+                event.stopPropagation();
+                userDropdown.classList.toggle('show');
+            });
+            window.addEventListener('click', (event) => {
+                if (userDropdown.classList.contains('show') && !userDropdown.contains(event.target) && !userMenuButton.contains(event.target)) {
+                    userDropdown.classList.remove('show');
+                }
+            });
+            if(logoutButton) {
+                logoutButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    sessionStorage.removeItem('loggedInUser');
+                    window.location.href = '../login.html'; 
+                });
+            }
+        }
+        
+        // --- Ponto de Entrada Principal ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserProfile();
+            setupUserMenu();
+            fetchPendingAdminRequests(); 
+            setupTableActionsAdmin();
+            displayBudgetAlert(); 
+        });
+    </script>
+</body>
+</html>

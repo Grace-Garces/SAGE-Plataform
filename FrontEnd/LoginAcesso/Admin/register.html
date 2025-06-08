@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Criar Usuário - SAGE</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* Variáveis de Cores e Estilos - Minimalista e Elegante (Padrão do Dashboard) */
+        :root {
+            /* Paleta Primária - Neutra e Limpa */
+            --bg-primary: #f8f9fa; /* Fundo principal, quase branco */
+            --surface-card: #ffffff; /* Fundo de cartões, branco puro */
+            --border-light: #e0e6ed; /* Bordas e divisores suaves */
+
+            /* Cores de Texto */
+            --text-dark: #343a40; /* Texto principal escuro */
+            --text-medium: #6c757d; /* Texto secundário, informações */
+            --text-light: #adb5bd; /* Texto muito claro, dicas */
+
+            /* Cores de Marca/Destaque - Suaves */
+            --brand-main: #5a67d8; /* Um azul mais calmo e profissional */
+            --brand-accent: #7f8de9; /* Uma versão mais clara do azul para hover/ativos */
+            --brand-text-on-dark: #e0e7fa; /* Texto em fundos escuros da marca */
+
+            /* Cores de Status/ABC - Dessaturadas */
+            --status-success: #28a745; /* Verde para sucesso */
+            --status-warning: #ffc107; /* Amarelo/Laranja para aviso */
+            --status-danger: #dc3545; /* Vermelho para perigo/estoque baixo */
+
+            /* Cores ABC para o gráfico (mantidas mesmo não usando o gráfico nesta tela, para consistência de paleta) */
+            --abc-a-color: #4CAF50;
+            --abc-b-color: #FFC107;
+            --abc-c-color: #e6525a;
+
+            /* Sombras - Muito sutis */
+            --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-color: var(--bg-primary);
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column; /* Necessário para navbar no topo */
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* --- Navbar Superior (Padrão do Dashboard) --- */
+        .navbar-top {
+            background-color: var(--surface-card);
+            border-bottom: 1px solid var(--border-light);
+            padding: 1.2rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-sm);
+            z-index: 1000;
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .navbar-top .logo {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            color: var(--brand-main);
+        }
+
+        .navbar-top nav {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .navbar-top nav a {
+            color: var(--text-medium);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 0.6rem 0.4rem;
+            position: relative;
+            transition: color 0.3s ease, background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            border-radius: 8px;
+        }
+
+        .navbar-top nav a:hover {
+            color: var(--brand-main);
+            background-color: var(--bg-primary);
+        }
+
+        .navbar-top nav a.active {
+            color: var(--brand-main);
+            font-weight: 700;
+            background-color: var(--bg-primary);
+        }
+
+        .navbar-top nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            width: calc(100% - 1rem);
+            height: 2px;
+            background-color: var(--brand-main);
+            border-radius: 1px;
+            transform: translateX(-50%) scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        .navbar-top nav a.active::after,
+        .navbar-top nav a:hover::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+        .navbar-top nav a i {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            transition: color 0.3s ease;
+        }
+        .navbar-top nav a:hover i,
+        .navbar-top nav a.active i {
+            color: var(--brand-main);
+        }
+
+        /* --- Perfil de Usuário no Header (Padrão do Dashboard) --- */
+        .user-profile {
+            position: relative;
+        }
+
+        .user-button {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.5rem 1.1rem;
+            border-radius: 999px;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: var(--shadow-sm);
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .user-button:hover {
+            background-color: var(--border-light);
+            box-shadow: var(--shadow-md);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--brand-main);
+            color: var(--brand-text-on-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.3rem;
+            border: 2px solid var(--brand-accent);
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 120%;
+            right: 0;
+            background-color: var(--surface-card);
+            border-radius: 0.8rem;
+            box-shadow: var(--shadow-md);
+            width: 280px;
+            z-index: 101;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+            opacity: 0;
+            transform: translateY(-10px) scale(0.98);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform-origin: top right;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .dropdown-menu > div {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            background-color: var(--bg-primary);
+        }
+
+        .dropdown-menu > div div:first-child {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 1rem;
+        }
+
+        .dropdown-menu > div div:last-child {
+            font-size: 0.85rem;
+            color: var(--text-medium);
+        }
+
+        .dropdown-menu a {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.9rem 1.5rem;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: var(--bg-primary);
+            color: var(--brand-main);
+        }
+        .dropdown-menu a i {
+            color: var(--text-medium);
+            transition: color 0.2s ease;
+        }
+        .dropdown-menu a:hover i {
+            color: var(--brand-main);
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background-color: var(--border-light);
+            margin: 0.6rem 0;
+        }
+
+        /* --- Conteúdo Principal (Padrão do Dashboard) --- */
+        .main-content {
+            flex-grow: 1;
+            padding: 2.5rem 3rem;
+            overflow-y: auto;
+            background-color: var(--bg-primary);
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .main-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0;
+            text-align: center;
+        }
+
+        /* --- Formulário (Padrão do Dashboard, ajustado para Criar Usuário) --- */
+        .form-card { /* Usando o mesmo estilo de .card para o container do formulário */
+            background-color: var(--surface-card);
+            padding: 2.5rem 3rem; /* Mais padding para o formulário */
+            border-radius: 0.8rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .form-card:hover { /* Adiciona o hover do card */
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .form-card h2 { /* Título dentro do form-card */
+            margin-top: 0;
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        .form-card h2::after { /* Linha de destaque para o título do formulário */
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 60px;
+            height: 3px;
+            background-color: var(--brand-main);
+            border-radius: 1px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem 2rem;
+        }
+        @media (max-width: 768px) {
+            .form-grid { grid-template-columns: 1fr; }
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        input, select {
+            width: 100%;
+            padding: 0.85rem;
+            border: 1px solid var(--border-light);
+            border-radius: 0.5rem;
+            box-sizing: border-box;
+            font-size: 1rem;
+            background-color: var(--bg-primary); /* Fundo claro para inputs */
+            color: var(--text-dark);
+            transition: box-shadow 0.2s, border-color 0.2s, background-color 0.2s;
+        }
+        input:focus, select:focus {
+            border-color: var(--brand-main);
+            box-shadow: 0 0 0 3px rgba(90, 103, 216, 0.2); /* Sombra mais suave */
+            outline: none;
+            background-color: var(--surface-card); /* Fundo branco no foco */
+        }
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236c757d' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); /* Cor do SVG da seta */
+            background-position: right 0.75rem center;
+            background-repeat: no-repeat;
+            background-size: 1.25em 1.25em;
+            padding-right: 2.5rem;
+        }
+        
+        .form-footer {
+            margin-top: 2.5rem;
+            border-top: 1px solid var(--border-light);
+            padding-top: 1.5rem;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 1rem;
+        }
+        .form-footer button {
+            padding: 0.8rem 1.75rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 700;
+            transition: all 0.2s ease-in-out;
+        }
+        .form-footer button:active { transform: scale(0.98); }
+        .primary-btn {
+            background-color: var(--brand-main);
+            color: white;
+            box-shadow: 0 4px 14px 0 rgba(90, 103, 216, 0.15); /* Sombra mais sutil */
+        }
+        .primary-btn:hover {
+            background-color: var(--brand-accent); /* Cor mais clara no hover */
+            box-shadow: 0 6px 20px 0 rgba(90, 103, 216, 0.25);
+        }
+        .primary-btn:disabled {
+            background-color: #aeb5ed; /* Cor desabilitada mais suave */
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        #responseArea {
+            flex-grow: 1;
+            padding: 0.8rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            text-align: center;
+            display: none;
+        }
+        .error { color: var(--status-danger); background-color: #fef2f2; border: 1px solid #fbd2d7; } /* Cores de erro padronizadas */
+        .success { color: var(--status-success); background-color: #f0fdf4; border: 1px solid #a3e6b7; } /* Cores de sucesso padronizadas */
+
+        /* Responsividade (Padrão do Dashboard) */
+        @media (max-width: 1200px) {
+            .navbar-top, .main-content {
+                padding: 1.5rem 2rem;
+            }
+            .navbar-top nav {
+                gap: 1.5rem;
+            }
+            .form-card {
+                padding: 1.5rem 2rem;
+            }
+            .form-card h2 {
+                font-size: 1.4rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .navbar-top {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
+            }
+            .navbar-top .logo {
+                width: 100%;
+                text-align: center;
+                margin-bottom: 1rem;
+            }
+            .navbar-top nav {
+                width: 100%;
+                justify-content: space-around;
+                flex-wrap: wrap;
+                margin-top: 1rem;
+            }
+            .navbar-top nav a {
+                flex-direction: column;
+                font-size: 0.85rem;
+                padding: 0.5rem 0.5rem;
+                gap: 0.3rem;
+            }
+            .navbar-top nav a::after {
+                display: none;
+            }
+            .user-profile {
+                width: 100%;
+                justify-content: center;
+                margin-top: 1.5rem;
+            }
+            .main-title {
+                font-size: 2.2rem;
+            }
+            .form-card {
+                padding: 1.5rem;
+            }
+            .form-card h2 {
+                font-size: 1.4rem;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar-top {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 1rem;
+            }
+            .navbar-top .logo {
+                font-size: 1.8rem;
+            }
+            .navbar-top nav {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.4rem;
+            }
+            .navbar-top nav a {
+                width: 100%;
+                justify-content: flex-start;
+                padding: 0.6rem 0.8rem;
+            }
+            .user-profile {
+                margin-top: 1rem;
+                justify-content: center;
+            }
+            .main-content {
+                padding: 1rem;
+                gap: 1.5rem;
+            }
+            .main-title {
+                font-size: 1.8rem;
+            }
+            .form-card {
+                padding: 1.2rem 1.5rem;
+                border-radius: 1.2rem;
+            }
+            .form-card h2 {
+                font-size: 1.2rem;
+                padding-bottom: 0.8rem;
+                margin-bottom: 1.2rem;
+            }
+            .form-card h2::after {
+                width: 40px;
+                height: 3px;
+            }
+            .form-footer {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.8rem;
+            }
+            .form-footer button {
+                width: 100%;
+            }
+            #responseArea {
+                order: -1; /* Move a área de resposta para cima */
+                margin-bottom: 0.5rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .navbar-top .logo {
+                font-size: 1.6rem;
+            }
+            .user-button {
+                padding: 0.4rem 1rem;
+                gap: 0.6rem;
+            }
+            .user-avatar {
+                width: 38px;
+                height: 38px;
+                font-size: 1.2rem;
+            }
+            .dropdown-menu {
+                width: 250px;
+                right: 5%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar-top">
+        <div class="logo">SAGE</div>
+        <nav>
+            <a href="Admin.html">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </a>
+            <a href="solicitacoes-acesso.html">
+                <i class="fas fa-user-plus"></i> Acessos
+            </a>
+            <a href="solicitacoes-insumos.html">
+                <i class="fas fa-clipboard-check"></i> Compras
+            </a>
+            <a href="register.html" class="active">
+                <i class="fas fa-user-friends"></i> Usuário
+            </a>
+            <a href="gerenciar-usuarios.html">
+                <i class="fas fa-users-cog"></i> Gerenciar
+            </a>
+        </nav>
+        <div class="user-profile">
+            <button class="user-button" id="user-menu-button">
+                <div class="user-avatar" id="user-avatar">?</div>
+                <span id="user-display-name">Usuário</span>
+            </button>
+            <div class="dropdown-menu" id="user-dropdown">
+                <div>
+                    <div id="dropdown-username">Carregando...</div>
+                    <div id="dropdown-email"></div>
+                </div>
+                <a href="#"><i class="fas fa-key"></i> Alterar Senha</a>
+                <a href="#"><i class="fas fa-image"></i> Alterar Foto de Perfil</a>
+                <div class="dropdown-divider"></div>
+                <a href="#" id="logout-button"><i class="fas fa-sign-out-alt"></i> Sair</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <h1 class="main-title">Criar Novo Usuário</h1>
+
+        <div class="form-card">
+            <h2>Dados do Novo Usuário</h2>
+            <form id="registerForm">
+                <div class="form-grid">
+                    <div>
+                        <label for="nomeCompleto">Nome Completo</label>
+                        <input type="text" id="nomeCompleto" placeholder="Digite o nome completo" required />
+                    </div>
+                    <div>
+                        <label for="usuario">Nome de Usuário</label>
+                        <input type="text" id="usuario" placeholder="Crie um nome de usuário" required />
+                    </div>
+                    <div>
+                        <label for="cpf">CPF</label>
+                        <input type="text" id="cpf" placeholder="000.000.000-00" required />
+                    </div>
+                    <div>
+                        <label for="senha">Senha</label>
+                        <input type="password" id="senha" placeholder="Crie uma senha forte" required />
+                    </div>
+                    <div>
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="exemplo@dominio.com" required />
+                    </div>
+                    <div>
+                        <label for="role">Tipo de Conta</label>
+                        <select id="role" required>
+                            <option value="user" selected>Usuário Padrão</option>
+                            <option value="admin">Administrador</option>
+                        </select>
+                    </div>
+                </div>
+            
+                <div class="form-footer">
+                    <div id="responseArea" role="alert"></div>
+                    <button type="submit" class="primary-btn">Registrar Usuário</button>
+                </div>
+            </form>
+        </div>
+    </main>
+ 
+    <script>
+        // --- Funções de Perfil de Usuário (Copiadas do Dashboard) ---
+        function loadUserProfile() {
+            const userString = sessionStorage.getItem('loggedInUser');
+            if (!userString) {
+                console.error('Nenhum usuário logado. Redirecionando para login.');
+                window.location.href = '../login.html'; // Garante que apenas usuários logados acessem
+                return;
+            }
+            
+            const user = JSON.parse(userString);
+            
+            const avatar = document.getElementById('user-avatar');
+            const displayName = document.getElementById('user-display-name');
+            const dropdownUsername = document.getElementById('dropdown-username');
+            const dropdownEmail = document.getElementById('dropdown-email');
+            
+            if (user.username) {
+                if (avatar) avatar.textContent = user.username.charAt(0).toUpperCase();
+                if (displayName) displayName.textContent = user.username;
+                if (dropdownUsername) dropdownUsername.textContent = user.username;
+            }
+            if (user.email) {
+                if (dropdownEmail) dropdownEmail.textContent = user.email;
+            }
+        }
+
+        // --- Função para controlar o menu dropdown do usuário (Copiada do Dashboard) ---
+        function setupUserMenu() {
+            const userMenuButton = document.getElementById('user-menu-button');
+            const userDropdown = document.getElementById('user-dropdown');
+            const logoutButton = document.getElementById('logout-button');
+
+            userMenuButton.addEventListener('click', (event) => {
+                event.stopPropagation();
+                userDropdown.classList.toggle('show');
+            });
+
+            window.addEventListener('click', (event) => {
+                if (userDropdown.classList.contains('show') && !userDropdown.contains(event.target) && !userMenuButton.contains(event.target)) {
+                    userDropdown.classList.remove('show');
+                }
+            });
+
+            if(logoutButton) {
+                logoutButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    sessionStorage.removeItem('loggedInUser');
+                    window.location.href = '../login.html';
+                });
+            }
+        }
+        
+        // --- Lógica do Formulário de Registro (Aprimorada para feedback) ---
+        async function handleRegistration(event) {
+            event.preventDefault();
+            const formData = {
+                nomeCompleto: document.getElementById('nomeCompleto').value,
+                cpf: document.getElementById('cpf').value,
+                email: document.getElementById('email').value,
+                usuario: document.getElementById('usuario').value,
+                senha: document.getElementById('senha').value,
+                role: document.getElementById('role').value,
+            };
+            
+            const responseArea = document.getElementById('responseArea');
+            const submitButton = event.target.querySelector('.primary-btn');
+            const apiUrl = 'http://localhost:5141/api/Auth/register'; // VERIFIQUE/AJUSTE ESTA URL
+
+            // Resetar e preparar para o envio
+            responseArea.style.display = 'none';
+            responseArea.className = '';
+            submitButton.textContent = 'Registrando...';
+            submitButton.disabled = true;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const responseData = await response.json().catch(() => ({ message: 'A resposta do servidor não é um JSON válido.' }));
+
+                if (response.ok) {
+                    responseArea.textContent = 'Sucesso! ' + (responseData?.message || 'Usuário registrado com sucesso.');
+                    responseArea.className = 'success';
+                    document.getElementById('registerForm').reset();
+                } else {
+                    let errorMessage = 'Não foi possível completar o registro.';
+                    if (responseData) {
+                        if (responseData.message) {
+                            errorMessage = responseData.message;
+                        } else if (responseData.errors) {
+                            const errorMessages = Object.values(responseData.errors).flat();
+                            if (errorMessages.length > 0) {
+                                errorMessage = errorMessages[0];
+                            }
+                        }
+                    }
+                    responseArea.textContent = `Erro: ${errorMessage}`;
+                    responseArea.className = 'error';
+                }
+            } catch (error) {
+                responseArea.textContent = 'Erro de conexão. Verifique se a API está online.';
+                responseArea.className = 'error';
+                console.error('Erro ao registrar:', error);
+            } finally {
+                responseArea.style.display = 'block';
+                submitButton.textContent = 'Registrar Usuário';
+                submitButton.disabled = false;
+            }
+        }
+
+        // --- Ponto de Entrada Principal ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserProfile();
+            setupUserMenu();
+            
+            document.getElementById('registerForm').addEventListener('submit', handleRegistration);
+
+            // Preenche o formulário se houver dados na URL (vindo da tela de aprovação)
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('nome')) {
+                document.getElementById('nomeCompleto').value = urlParams.get('nome');
+            }
+            if (urlParams.has('cpf')) {
+                document.getElementById('cpf').value = urlParams.get('cpf');
+            }
+            if (urlParams.has('email')) {
+                document.getElementById('email').value = urlParams.get('email');
+            }
+        });
+    </script>
+</body>
+</html>

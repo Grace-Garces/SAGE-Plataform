@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitar Acesso - SAGE</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* Variáveis de Cores e Estilos - Minimalista e Elegante (PADRÃO) */
+        :root {
+            /* Paleta Primária - Neutra e Limpa */
+            --bg-primary: #f8f9fa; /* Fundo principal, quase branco */
+            --surface-card: #ffffff; /* Fundo de cartões, branco puro */
+            --border-light: #e0e6ed; /* Bordas e divisores suaves */
+
+            /* Cores de Texto */
+            --text-dark: #343a40; /* Texto principal escuro */
+            --text-medium: #6c757d; /* Texto secundário, informações */
+            --text-light: #adb5bd; /* Texto muito claro, dicas */
+
+            /* Cores de Marca/Destaque - Suaves */
+            --brand-main: #5a67d8; /* Um azul mais calmo e profissional */
+            --brand-accent: #7f8de9; /* Uma versão mais clara do azul para hover/ativos */
+            --brand-text-on-dark: #e0e7fa; /* Texto em fundos escuros da marca */
+
+            /* Cores de Status/ABC (mantidas para consistência de paleta) */
+            --status-success: #28a745;
+            --status-warning: #ffc107;
+            --status-danger: #dc3545;
+
+            /* Sombras - Muito sutis */
+            --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-color: var(--bg-primary); /* Fundo geral da página */
+            color: var(--text-dark);
+            display: flex;
+            min-height: 100vh;
+            overflow: hidden; /* Evita scroll desnecessário */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .left-side {
+            flex: 1;
+            background: url('../image/image.png') center / cover no-repeat; /* Ajustado background para cobrir e não repetir */
+            display: flex; /* Para centralizar o conteúdo se houver */
+            align-items: center;
+            justify-content: center;
+            position: relative; /* Para possíveis overlays ou texto */
+        }
+        
+        /* Optional: Add an overlay to the image for better contrast with text if any */
+        .left-side::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3); /* Escurece a imagem levemente */
+        }
+        /* Optional: Add some text over the image */
+        .left-side-content {
+            position: relative; /* Above the overlay */
+            z-index: 1;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+        .left-side-content h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .left-side-content p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background-color: var(--bg-primary); /* Fundo principal da área do formulário */
+        }
+
+        .form-container {
+            background-color: var(--surface-card); /* Fundo branco para o container do formulário */
+            max-width: 450px; /* Ligeiramente mais largo */
+            width: 100%;
+            padding: 3rem; /* Mais padding */
+            border-radius: 1rem; /* Mais arredondado */
+            box-shadow: var(--shadow-md); /* Sombra consistente */
+            border: 1px solid var(--border-light); /* Borda sutil */
+        }
+
+        .form-container h1 {
+            font-size: 2.2rem; /* Título maior */
+            font-weight: 700;
+            color: var(--text-dark); /* Cor de texto padrão */
+            margin-bottom: 0.8rem; /* Ajuste de margem */
+            text-align: center;
+        }
+
+        .form-container p {
+            color: var(--text-medium); /* Cor de texto secundária */
+            margin-bottom: 2.5rem; /* Mais espaço abaixo do parágrafo */
+            text-align: center;
+            font-size: 1.05rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.6rem; /* Mais espaço */
+            font-weight: 600;
+            color: var(--text-dark); /* Cor de texto padrão */
+            font-size: 0.95rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.9rem; /* Mais padding */
+            margin-bottom: 1.2rem; /* Mais espaço */
+            border: 1px solid var(--border-light); /* Borda consistente */
+            border-radius: 0.5rem; /* Mais arredondado */
+            box-sizing: border-box;
+            font-size: 1rem;
+            background-color: var(--bg-primary); /* Fundo claro para inputs */
+            color: var(--text-dark);
+            transition: box-shadow 0.2s, border-color 0.2s, background-color 0.2s;
+        }
+        input:focus {
+            border-color: var(--brand-main); /* Cor da marca no foco */
+            box-shadow: 0 0 0 3px rgba(90, 103, 216, 0.2); /* Sombra suave */
+            outline: none;
+            background-color: var(--surface-card); /* Fundo branco no foco */
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.8rem; /* Mais espaço */
+        }
+        button {
+            flex-grow: 1;
+            background-color: var(--brand-main); /* Cor da marca */
+            color: white;
+            padding: 1rem 1.2rem; /* Mais padding */
+            border: none;
+            border-radius: 0.5rem; /* Mais arredondado */
+            cursor: pointer;
+            font-size: 1.1rem; /* Botão maior */
+            font-weight: 700; /* Mais negrito */
+            transition: background-color 0.2s, box-shadow 0.2s, transform 0.2s;
+            box-shadow: var(--shadow-sm); /* Sombra sutil */
+        }
+        button:hover {
+            background-color: var(--brand-accent); /* Cor mais clara no hover */
+            transform: translateY(-2px); /* Leve levantamento */
+            box-shadow: var(--shadow-md); /* Sombra maior */
+        }
+        button:disabled {
+            background-color: #aeb5ed; /* Cor desabilitada mais suave */
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: translateY(0);
+        }
+        button.secondary {
+            background-color: var(--text-medium); /* Cinza para secundário */
+            box-shadow: none;
+        }
+        button.secondary:hover {
+            background-color: #5a6268; /* Cinza mais escuro no hover */
+            transform: translateY(-2px); /* Leve levantamento */
+            box-shadow: var(--shadow-sm); /* Sombra sutil */
+        }
+
+        /* Pop-up Styles (PADRÃO) */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4); /* Fundo escuro mais suave */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .popup-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .popup-content {
+            background-color: var(--surface-card);
+            padding: 2.5rem;
+            border-radius: 0.8rem; /* Consistente */
+            box-shadow: var(--shadow-md); /* Sombra consistente */
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            border: 1px solid var(--border-light); /* Borda consistente */
+        }
+        .popup-overlay.show .popup-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .popup-content h2 {
+            font-size: 1.8rem; /* Título maior */
+            margin-bottom: 1rem;
+            color: var(--text-dark); /* Cor de texto padrão */
+        }
+        .popup-content p {
+            font-size: 1.1rem;
+            color: var(--text-medium); /* Cor de texto secundária */
+            margin-bottom: 1.5rem;
+        }
+        .popup-content button {
+            padding: 0.8rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 700; /* Mais negrito */
+            font-size: 1rem;
+            transition: background-color 0.2s, opacity 0.2s;
+        }
+        .popup-content button:hover {
+            opacity: 0.9;
+        }
+
+        /* Success and Error states for popup */
+        .popup-content.success h2, .popup-content.success button { color: var(--status-success); }
+        .popup-content.success button { background-color: var(--status-success); color: white; }
+        .popup-content.error h2, .popup-content.error button { color: var(--status-danger); }
+        .popup-content.error button { background-color: var(--status-danger); color: white; }
+
+        /* Loading Spinner (PADRÃO) */
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: var(--brand-main); /* Cor da marca para o spinner */
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 0.5rem;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .button-loading { /* Estilo para o botão com spinner */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column; /* Stack image and form vertically */
+                overflow-y: auto; /* Allow scrolling on small screens */
+            }
+            .left-side {
+                flex: none; /* Remove flex sizing */
+                width: 100%;
+                height: 180px; /* Fixed height for image on small screens */
+                background-size: cover;
+                background-position: center;
+            }
+            .left-side-content h1 {
+                font-size: 2rem;
+            }
+            .left-side-content p {
+                font-size: 0.9rem;
+            }
+            main {
+                padding: 1.5rem;
+                flex: none; /* Remove flex sizing */
+                width: 100%;
+            }
+            .form-container {
+                padding: 1.8rem;
+                border-radius: 0.8rem;
+                box-shadow: var(--shadow-md);
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            .form-container p {
+                font-size: 0.95rem;
+                margin-bottom: 1.5rem;
+            }
+            label {
+                font-size: 0.9rem;
+            }
+            input {
+                padding: 0.75rem;
+                font-size: 0.95rem;
+                margin-bottom: 1rem;
+            }
+            button {
+                padding: 0.8rem 1rem;
+                font-size: 1rem;
+            }
+            .button-group {
+                flex-direction: column; /* Stack buttons vertically */
+                gap: 0.8rem;
+            }
+            .popup-content {
+                padding: 1.8rem;
+            }
+            .popup-content h2 {
+                font-size: 1.5rem;
+            }
+            .popup-content p {
+                font-size: 1rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .left-side {
+                height: 150px;
+            }
+            .left-side-content h1 {
+                font-size: 1.8rem;
+            }
+            .left-side-content p {
+                font-size: 0.8rem;
+            }
+            .form-container {
+                padding: 1.2rem;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+            input {
+                padding: 0.6rem;
+            }
+            button {
+                padding: 0.7rem;
+            }
+            .popup-content {
+                padding: 1.5rem;
+            }
+            .popup-content h2 {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="left-side">
+        <div class="left-side-content">
+            <h1>SAGE</h1>
+            <p>Gerenciamento inteligente de estoque e compras para sua escola.</p>
+        </div>
+    </div>
+    <main>
+        <div class="form-container">
+            <h1>Solicitar Acesso</h1>
+            <p>Preencha seus dados para que um administrador possa criar sua conta.</p>
+            <form id="requestAccessForm">
+                <div>
+                    <label for="nomeCompleto">Nome Completo</label>
+                    <input type="text" id="nomeCompleto" placeholder="Seu nome completo" required>
+                </div>
+                <div>
+                    <label for="cpf">CPF</label>
+                    <input type="text" id="cpf" placeholder="Seu CPF (apenas números)" required maxlength="14">
+                </div>
+                <div>
+                    <label for="email">Email Corporativo</label>
+                    <input type="email" id="email" placeholder="seu.email@dominio.com" required>
+                </div>
+                <div class="button-group">
+                    <button type="button" class="secondary" onclick="window.location.href='login.html'">
+                        <i class="fas fa-arrow-left"></i> Voltar
+                    </button>
+                    <button type="submit" id="submitButton">
+                        <i class="fas fa-paper-plane"></i> Enviar Solicitação
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <div id="notificationPopup" class="popup-overlay">
+        <div class="popup-content" id="popupContent">
+            <h2 id="popupTitle"></h2>
+            <p id="popupMessage"></p>
+            <button id="popupCloseButton">
+                <i class="fas fa-check"></i> Fechar
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const notificationPopup = document.getElementById('notificationPopup');
+        const popupContent = document.getElementById('popupContent');
+        const popupTitle = document.getElementById('popupTitle');
+        const popupMessage = document.getElementById('popupMessage');
+        const popupCloseButton = document.getElementById('popupCloseButton');
+        const submitButton = document.getElementById('submitButton');
+        const requestAccessForm = document.getElementById('requestAccessForm');
+        const cpfInput = document.getElementById('cpf');
+
+        // Function to format CPF
+        cpfInput.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\D/g, ''); // Remove all non-digits
+            if (value.length > 11) value = value.slice(0, 11); // Limit to 11 digits for CPF
+
+            // Apply the mask
+            if (value.length > 9) {
+                value = value.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4');
+            } else if (value.length > 6) {
+                value = value.replace(/^(\d{3})(\d{3})(\d{3})$/, '$1.$2.$3');
+            } else if (value.length > 3) {
+                value = value.replace(/^(\d{3})(\d{3})$/, '$1.$2');
+            } else if (value.length > 0) {
+                value = value.replace(/^(\d{3})$/, '$1');
+            }
+            e.target.value = value;
+        });
+
+        // Function to display the pop-up
+        function showPopup(title, message, isSuccess) {
+            popupTitle.textContent = title;
+            popupMessage.textContent = message;
+            popupContent.classList.remove('success', 'error'); // Clean previous states
+            notificationPopup.classList.add('show');
+
+            if (isSuccess) {
+                popupContent.classList.add('success');
+                popupCloseButton.innerHTML = '<i class="fas fa-check"></i> Fechar';
+            } else {
+                popupContent.classList.add('error');
+                popupCloseButton.innerHTML = '<i class="fas fa-times"></i> Fechar';
+            }
+        }
+
+        // Function to hide the pop-up
+        function hidePopup() {
+            notificationPopup.classList.remove('show');
+            popupContent.classList.remove('success', 'error'); // Clean states on hide
+        }
+
+        popupCloseButton.addEventListener('click', hidePopup);
+
+        requestAccessForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            submitButton.innerHTML = '<span class="spinner"></span> Enviando...';
+            submitButton.disabled = true;
+            submitButton.classList.add('button-loading'); // Add loading class for spinner alignment
+
+            const nomeCompleto = document.getElementById('nomeCompleto').value;
+            const cpf = document.getElementById('cpf').value.replace(/\D/g, ''); // Clean CPF before sending
+            const email = document.getElementById('email').value;
+
+            const apiUrl = 'http://localhost:5141/api/Auth/request-access'; // VERIFIQUE/AJUSTE ESTA URL
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        nomeCompleto: nomeCompleto,
+                        cpf: cpf,
+                        email: email
+                    })
+                });
+
+                const responseData = await response.json();
+
+                if (response.ok) {
+                    showPopup('Solicitação Enviada!', responseData.message || 'Sua solicitação foi enviada com sucesso e será revisada por um administrador.', true);
+                    requestAccessForm.reset(); // Clear the form on success
+                } else {
+                    showPopup('Erro ao Enviar Solicitação', responseData.message || 'Ocorreu um erro desconhecido ao enviar sua solicitação.', false);
+                }
+            } catch (error) {
+                console.error('Network or API error:', error);
+                showPopup('Erro de Conexão', 'Não foi possível conectar ao servidor. Verifique sua conexão ou tente novamente mais tarde.', false);
+            } finally {
+                submitButton.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Solicitação';
+                submitButton.disabled = false;
+                submitButton.classList.remove('button-loading'); // Remove loading class
+            }
+        });
+    </script>
+</body>
+</html>
