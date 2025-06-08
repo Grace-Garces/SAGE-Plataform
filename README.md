@@ -4,13 +4,13 @@ A **Plataforma SAGE** é uma aplicação **full-stack** desenvolvida para modern
 
 ## 📸 Visão Geral do Projeto
 
-![Tela inicial do sistema](./1.jpg)
+![Tela inicial do sistema](./1.PNG)
 *Exemplo da tela de login com autenticação segura.*
 
 ![Dashboard financeiro](./3.PNG)
 *Gráfico financeiro com receitas vs. despesas.*
 
-![Cadastro de usuário com níveis de permissão](./Capturar.jpg)
+![Cadastro de usuário com níveis de permissão](./Capturar.PNG)
 *Tela de cadastro com envio automático de credenciais via e-mail.*
 
 ## 📌 Funcionalidades Principais
