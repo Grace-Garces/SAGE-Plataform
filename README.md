@@ -2,6 +2,17 @@
 
 A **Plataforma SAGE** é uma aplicação **full-stack** desenvolvida para modernizar a gestão de cantinas escolares. Nascida como tema de um hackathon acadêmico, foi transformada em um projeto completo com foco em automação de processos, controle de estoque e tomada de decisão baseada em dados.
 
+## 📸 Visão Geral do Projeto
+
+![Tela inicial do sistema](./1.jpg)
+*Exemplo da tela de login com autenticação segura.*
+
+![Dashboard financeiro](./3.PNG)
+*Gráfico financeiro com receitas vs. despesas.*
+
+![Cadastro de usuário com níveis de permissão](./Capturar.jpg)
+*Tela de cadastro com envio automático de credenciais via e-mail.*
+
 ## 📌 Funcionalidades Principais
 
 - **Gestão de Acesso Segura:**  
